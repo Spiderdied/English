@@ -63,6 +63,7 @@ body {
   color: var(--text);
   line-height: 1.7;
   transition: background var(--transition), color var(--transition);
+  overflow: hidden; /* FIX: prevent double scrollbar */
 }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -72,7 +73,7 @@ img { max-width: 100%; }
 /* ============================================================
    LAYOUT
    ============================================================ */
-.app-wrapper { display: flex; min-height: 100vh; }
+.app-wrapper { display: flex; height: 100vh; overflow: hidden; }
 
 /* SIDEBAR */
 .sidebar {
@@ -82,16 +83,16 @@ img { max-width: 100%; }
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  position: sticky;
-  top: 0;
   height: 100vh;
-  overflow-y: auto;
+  overflow: hidden; /* FIX: contain children */
   z-index: 100;
   transition: transform var(--transition), background var(--transition);
+  flex-shrink: 0;
 }
 .sidebar-logo {
   padding: 24px 20px 16px;
   border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 .sidebar-logo h1 {
   font-family: var(--font-display);
@@ -112,6 +113,8 @@ img { max-width: 100%; }
 .sidebar-search {
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
+  position: relative;
+  flex-shrink: 0;
 }
 .sidebar-search input {
   width: 100%;
@@ -129,7 +132,21 @@ img { max-width: 100%; }
   background-position: 10px center;
 }
 .sidebar-search input:focus { border-color: var(--accent); }
-.sidebar-nav { padding: 8px 0; flex: 1; }
+
+/* FIX: sidebar-nav scrollable */
+.sidebar-nav {
+  padding: 8px 0;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
 .nav-section-label {
   font-size: 0.65rem;
   font-family: var(--font-mono);
@@ -153,14 +170,13 @@ img { max-width: 100%; }
 .nav-item:hover { background: var(--bg2); color: var(--text); }
 .nav-item.active { background: var(--bg2); border-left-color: var(--accent); color: var(--accent); font-weight: 600; }
 .nav-item .nav-icon { font-size: 1rem; flex-shrink: 0; }
-.nav-sub { padding-left: 16px; }
-.nav-sub .nav-item { font-size: 0.78rem; padding: 6px 20px; }
 .sidebar-footer {
   padding: 16px;
   border-top: 1px solid var(--border);
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-shrink: 0;
 }
 .btn-icon {
   background: var(--bg2);
@@ -173,12 +189,19 @@ img { max-width: 100%; }
 }
 .btn-icon:hover { background: var(--border); color: var(--text); }
 
-/* MAIN */
+/* MAIN — FIX: scroll here, not body */
 .main-content {
   flex: 1;
   min-width: 0;
+  height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
+.main-content::-webkit-scrollbar { width: 6px; }
+.main-content::-webkit-scrollbar-track { background: transparent; }
+.main-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
 /* TOP BAR */
 .topbar {
@@ -400,6 +423,7 @@ img { max-width: 100%; }
   color: var(--text3);
   margin-bottom: 24px;
   font-family: var(--font-mono);
+  flex-wrap: wrap;
 }
 .breadcrumb span { color: var(--text3); }
 .breadcrumb a { color: var(--text2); cursor: pointer; }
@@ -418,6 +442,7 @@ img { max-width: 100%; }
   gap: 16px;
   margin-bottom: 32px;
   flex-wrap: wrap;
+  align-items: center;
 }
 .lesson-meta-item {
   display: flex;
@@ -571,7 +596,7 @@ img { max-width: 100%; }
 .quiz-score.show { display: block; }
 .quiz-score-num { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--accent); }
 .quiz-score-label { font-size: 0.82rem; color: var(--text3); margin-top: 4px; }
-.quiz-reset { background: none; border: 1px solid var(--border); color: var(--text2); border-radius: var(--radius-sm); padding: 6px 16px; font-size: 0.8rem; margin-top: 10px; transition: all var(--transition); }
+.quiz-reset { background: none; border: 1px solid var(--border); color: var(--text2); border-radius: var(--radius-sm); padding: 6px 16px; font-size: 0.8rem; margin-top: 10px; transition: all var(--transition); cursor: pointer; }
 .quiz-reset:hover { background: var(--bg2); }
 
 /* ANSWER REVEAL */
@@ -595,8 +620,10 @@ img { max-width: 100%; }
   text-align: left;
   font-family: var(--font-body);
   transition: color var(--transition);
+  gap: 8px;
 }
 .answer-toggle:hover { color: var(--accent); }
+.answer-toggle span { flex-shrink: 0; }
 .answer-reveal {
   display: none;
   padding: 10px 16px 14px;
@@ -611,7 +638,7 @@ img { max-width: 100%; }
 .fill-blank-container { }
 .fill-blank-text {
   font-size: 0.95rem;
-  line-height: 2.2;
+  line-height: 2.4;
   margin-bottom: 16px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -628,13 +655,28 @@ img { max-width: 100%; }
   font-size: 0.92rem;
   color: var(--text);
   outline: none;
-  min-width: 90px;
+  min-width: 100px;
   text-align: center;
   transition: border-color var(--transition);
 }
 .blank-input:focus { border-color: var(--blue2); }
 .blank-input.correct { border-color: var(--green); color: var(--green); }
 .blank-input.wrong { border-color: var(--accent); color: var(--accent); }
+
+/* FIX: Reset fill blanks button */
+.fill-btn-group { display: flex; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
+.quiz-btn-outline {
+  background: none;
+  color: var(--text2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 18px;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  transition: all var(--transition);
+  cursor: pointer;
+}
+.quiz-btn-outline:hover { background: var(--bg2); border-color: var(--text3); }
 
 /* GRAMMAR BOXES */
 .grammar-rule {
@@ -735,7 +777,7 @@ img { max-width: 100%; }
 .writing-prompt ul { padding-left: 18px; }
 .writing-prompt ul li { font-size: 0.85rem; color: var(--text2); margin-bottom: 4px; }
 
-/* STUDY LATER */
+/* BOOKMARK */
 .bookmark-btn {
   background: none;
   border: 1px solid var(--border);
@@ -747,6 +789,7 @@ img { max-width: 100%; }
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  cursor: pointer;
 }
 .bookmark-btn:hover, .bookmark-btn.bookmarked { color: var(--gold); border-color: var(--gold); }
 .review-section {
@@ -779,7 +822,7 @@ tr:nth-child(even) td { background: var(--bg2); }
 /* PRINT */
 @media print {
   .sidebar, .topbar, .btn-icon, .quiz-btn, .bookmark-btn { display: none !important; }
-  .main-content { overflow: visible; }
+  body, .app-wrapper, .main-content { overflow: visible !important; height: auto !important; }
   .content-area { padding: 0; }
   * { color: black !important; background: white !important; box-shadow: none !important; }
 }
@@ -813,6 +856,7 @@ tr:nth-child(even) td { background: var(--bg2); }
 @media (max-width: 480px) {
   .vocab-list { grid-template-columns: 1fr; }
   .hero-cards { flex-direction: column; }
+  .lesson-title { font-size: 1.5rem; }
 }
 
 /* ANIMATIONS */
@@ -823,8 +867,8 @@ tr:nth-child(even) td { background: var(--bg2); }
 .search-results {
   position: absolute;
   top: 100%;
-  left: 16px;
-  right: 16px;
+  left: 0;
+  right: 0;
   background: var(--surface);
   border: 1px solid var(--border);
   border-top: none;
@@ -853,10 +897,6 @@ tr:nth-child(even) td { background: var(--bg2); }
   color: var(--text3);
   margin-left: 6px;
 }
-.sidebar-search { position: relative; }
-
-/* HOMEPAGE NAV */
-.home-view { }
 </style>
 </head>
 <body>
@@ -890,7 +930,7 @@ tr:nth-child(even) td { background: var(--bg2); }
         <span class="nav-icon">📐</span> Essay Structure
       </div>
       <div class="nav-item" onclick="showPage('grammar-accuracy')" data-page="grammar-accuracy">
-        <span class="nav-icon">🎯</span> Grammar & Accuracy
+        <span class="nav-icon">🎯</span> Grammar &amp; Accuracy
       </div>
 
       <div class="nav-section-label">Part Two — Reading</div>
@@ -946,7 +986,7 @@ tr:nth-child(even) td { background: var(--bg2); }
   </aside>
 
   <!-- MAIN -->
-  <div class="main-content">
+  <div class="main-content" id="mainContent">
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:12px;">
         <button class="btn-menu" onclick="openSidebar()">☰</button>
@@ -1010,7 +1050,7 @@ tr:nth-child(even) td { background: var(--bg2); }
           <div class="unit-card" style="--card-color:#2d6a4f;" onclick="showPage('grammar-accuracy')">
             <div class="unit-card-icon">🎯</div>
             <div class="unit-card-num">Writing · Lesson 3</div>
-            <h4>Grammar & Accuracy</h4>
+            <h4>Grammar &amp; Accuracy</h4>
             <p>Sentence variety, punctuation, spelling, and writing with precision.</p>
             <div class="unit-card-footer"><span class="unit-tag">Accuracy</span></div>
           </div>
@@ -1021,76 +1061,16 @@ tr:nth-child(even) td { background: var(--bg2); }
           <span class="section-badge">10 Passages</span>
         </div>
         <div class="cards-grid" style="margin-bottom:40px;">
-          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-1')">
-            <div class="unit-card-icon">🏨</div>
-            <div class="unit-card-num">Reading · Passage 1</div>
-            <h4>The Ice Hotel</h4>
-            <p>Discover Canada's famous hotel made entirely of ice and snow.</p>
-            <div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div>
-          </div>
-          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-2')">
-            <div class="unit-card-icon">💧</div>
-            <div class="unit-card-num">Reading · Passage 2</div>
-            <h4>The Importance of Water</h4>
-            <p>How water benefits the body and how much we really need each day.</p>
-            <div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div>
-          </div>
-          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-3')">
-            <div class="unit-card-icon">🌍</div>
-            <div class="unit-card-num">Reading · Passage 3</div>
-            <h4>Borrowed Words</h4>
-            <p>Shampoo, ketchup, sauna — tracing English words back to their origins.</p>
-            <div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div>
-          </div>
-          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-4')">
-            <div class="unit-card-icon">🌳</div>
-            <div class="unit-card-num">Reading · Passage 4</div>
-            <h4>The Apple Tree</h4>
-            <p>A short story about cutting down a tree and discovering hidden treasure.</p>
-            <div class="unit-card-footer"><span class="unit-tag">6 Questions</span></div>
-          </div>
-          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-5')">
-            <div class="unit-card-icon">🎨</div>
-            <div class="unit-card-num">Reading · Passage 5</div>
-            <h4>Seeing Red</h4>
-            <p>How colors affect our emotions, behavior, and the choices we make.</p>
-            <div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div>
-          </div>
-          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-6')">
-            <div class="unit-card-icon">💭</div>
-            <div class="unit-card-num">Reading · Passage 6</div>
-            <h4>Understanding Dreams</h4>
-            <p>The science of dreaming, dream types, and what they might mean.</p>
-            <div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div>
-          </div>
-          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-7')">
-            <div class="unit-card-icon">🔺</div>
-            <div class="unit-card-num">Reading · Passage 7</div>
-            <h4>Wonders of Egypt</h4>
-            <p>Who really built the pyramids of Giza, and what was their life like?</p>
-            <div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div>
-          </div>
-          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-8')">
-            <div class="unit-card-icon">🪐</div>
-            <div class="unit-card-num">Reading · Passage 8</div>
-            <h4>The Solar System</h4>
-            <p>Planets, moons, dwarf planets, and the structure of our solar system.</p>
-            <div class="unit-card-footer"><span class="unit-tag">10 Questions</span></div>
-          </div>
-          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-9')">
-            <div class="unit-card-icon">🏃</div>
-            <div class="unit-card-num">Reading · Passage 9</div>
-            <h4>The Importance of Exercise</h4>
-            <p>Physical activity, mental health, and maintaining a healthy lifestyle.</p>
-            <div class="unit-card-footer"><span class="unit-tag">10 Questions</span></div>
-          </div>
-          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-10')">
-            <div class="unit-card-icon">🌐</div>
-            <div class="unit-card-num">Reading · Passage 10</div>
-            <h4>History of the Internet</h4>
-            <p>From ARPANET in the 1960s to the World Wide Web and modern life.</p>
-            <div class="unit-card-footer"><span class="unit-tag">10 Questions</span></div>
-          </div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-1')"><div class="unit-card-icon">🏨</div><div class="unit-card-num">Reading · Passage 1</div><h4>The Ice Hotel</h4><p>Discover Canada's famous hotel made entirely of ice and snow.</p><div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div></div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-2')"><div class="unit-card-icon">💧</div><div class="unit-card-num">Reading · Passage 2</div><h4>The Importance of Water</h4><p>How water benefits the body and how much we really need each day.</p><div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div></div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-3')"><div class="unit-card-icon">🌍</div><div class="unit-card-num">Reading · Passage 3</div><h4>Borrowed Words</h4><p>Shampoo, ketchup, sauna — tracing English words back to their origins.</p><div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div></div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-4')"><div class="unit-card-icon">🌳</div><div class="unit-card-num">Reading · Passage 4</div><h4>The Apple Tree</h4><p>A short story about cutting down a tree and discovering hidden treasure.</p><div class="unit-card-footer"><span class="unit-tag">6 Questions</span></div></div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-5')"><div class="unit-card-icon">🎨</div><div class="unit-card-num">Reading · Passage 5</div><h4>Seeing Red</h4><p>How colors affect our emotions, behavior, and the choices we make.</p><div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div></div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-6')"><div class="unit-card-icon">💭</div><div class="unit-card-num">Reading · Passage 6</div><h4>Understanding Dreams</h4><p>The science of dreaming, dream types, and what they might mean.</p><div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div></div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-7')"><div class="unit-card-icon">🔺</div><div class="unit-card-num">Reading · Passage 7</div><h4>Wonders of Egypt</h4><p>Who really built the pyramids of Giza, and what was their life like?</p><div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div></div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-8')"><div class="unit-card-icon">🪐</div><div class="unit-card-num">Reading · Passage 8</div><h4>The Solar System</h4><p>Planets, moons, dwarf planets, and the structure of our solar system.</p><div class="unit-card-footer"><span class="unit-tag">10 Questions</span></div></div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-9')"><div class="unit-card-icon">🏃</div><div class="unit-card-num">Reading · Passage 9</div><h4>The Importance of Exercise</h4><p>Physical activity, mental health, and maintaining a healthy lifestyle.</p><div class="unit-card-footer"><span class="unit-tag">10 Questions</span></div></div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-10')"><div class="unit-card-icon">🌐</div><div class="unit-card-num">Reading · Passage 10</div><h4>History of the Internet</h4><p>From ARPANET in the 1960s to the World Wide Web and modern life.</p><div class="unit-card-footer"><span class="unit-tag">10 Questions</span></div></div>
         </div>
 
         <div class="section-header">
@@ -1098,27 +1078,9 @@ tr:nth-child(even) td { background: var(--bg2); }
           <span class="section-badge">3 Units</span>
         </div>
         <div class="cards-grid">
-          <div class="unit-card" style="--card-color:#b8860b;" onclick="showPage('grammar-pos')">
-            <div class="unit-card-icon">📚</div>
-            <div class="unit-card-num">Grammar · Unit 1</div>
-            <h4>Parts of Speech</h4>
-            <p>Nouns, verbs, adjectives, adverbs, pronouns — with examples and a quiz.</p>
-            <div class="unit-card-footer"><span class="unit-tag">3 Questions</span></div>
-          </div>
-          <div class="unit-card" style="--card-color:#b8860b;" onclick="showPage('grammar-sentence')">
-            <div class="unit-card-icon">🧱</div>
-            <div class="unit-card-num">Grammar · Unit 2</div>
-            <h4>Sentence Structure</h4>
-            <p>Simple, compound, complex, and compound-complex sentences explained.</p>
-            <div class="unit-card-footer"><span class="unit-tag">2 Questions</span></div>
-          </div>
-          <div class="unit-card" style="--card-color:#b8860b;" onclick="showPage('grammar-tenses')">
-            <div class="unit-card-icon">⏱️</div>
-            <div class="unit-card-num">Grammar · Unit 3</div>
-            <h4>Tenses</h4>
-            <p>Present Simple and Past Simple: forms, uses, spelling rules, and a 16-question quiz.</p>
-            <div class="unit-card-footer"><span class="unit-tag">16 Questions</span></div>
-          </div>
+          <div class="unit-card" style="--card-color:#b8860b;" onclick="showPage('grammar-pos')"><div class="unit-card-icon">📚</div><div class="unit-card-num">Grammar · Unit 1</div><h4>Parts of Speech</h4><p>Nouns, verbs, adjectives, adverbs, pronouns — with examples and a quiz.</p><div class="unit-card-footer"><span class="unit-tag">3 Questions</span></div></div>
+          <div class="unit-card" style="--card-color:#b8860b;" onclick="showPage('grammar-sentence')"><div class="unit-card-icon">🧱</div><div class="unit-card-num">Grammar · Unit 2</div><h4>Sentence Structure</h4><p>Simple, compound, complex, and compound-complex sentences explained.</p><div class="unit-card-footer"><span class="unit-tag">2 Questions</span></div></div>
+          <div class="unit-card" style="--card-color:#b8860b;" onclick="showPage('grammar-tenses')"><div class="unit-card-icon">⏱️</div><div class="unit-card-num">Grammar · Unit 3</div><h4>Tenses</h4><p>Present Simple and Past Simple: forms, uses, spelling rules, and a 16-question quiz.</p><div class="unit-card-footer"><span class="unit-tag">16 Questions</span></div></div>
         </div>
       </div>
 
@@ -1249,8 +1211,8 @@ tr:nth-child(even) td { background: var(--bg2); }
 
       <!-- ======================== GRAMMAR ACCURACY ======================== -->
       <div id="page-grammar-accuracy" class="lesson-view">
-        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part One</span><span>›</span><span>Grammar & Accuracy</span></div>
-        <div class="lesson-title">Grammar & Accuracy in Essays</div>
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part One</span><span>›</span><span>Grammar &amp; Accuracy</span></div>
+        <div class="lesson-title">Grammar &amp; Accuracy in Essays</div>
         <div class="lesson-meta">
           <div class="lesson-meta-item">✍️ Part One — Essay Writing</div>
           <div class="lesson-meta-item">📄 Lesson 3</div>
@@ -1331,10 +1293,13 @@ tr:nth-child(even) td { background: var(--bg2); }
             <p style="font-size:0.82rem;color:var(--text3);margin-bottom:12px;">Word bank: <strong>cozy · fantastic · freezing · surprisingly · unique</strong></p>
             <div class="fill-blank-container" id="fill-r1">
               <div class="fill-blank-text">
-                The Ice Hotel is a/an (1) <input class="blank-input" data-ans="unique"> hotel in Canada. It is made of only ice and snow. So, the inside temperature is usually (2) <input class="blank-input" data-ans="freezing"> cold. (3) <input class="blank-input" data-ans="surprisingly">, this hotel is very popular. Many people enjoy looking at the (4) <input class="blank-input" data-ans="fantastic"> art in its gallery and eating from special ice dishes. Guests have a good sleep in the cold hotel rooms under the (5) <input class="blank-input" data-ans="cozy"> fur blankets.
+                The Ice Hotel is a/an (1) <input class="blank-input" data-ans="unique" placeholder="…"> hotel in Canada. It is made of only ice and snow. So, the inside temperature is usually (2) <input class="blank-input" data-ans="freezing" placeholder="…"> cold. (3) <input class="blank-input" data-ans="surprisingly" placeholder="…">, this hotel is very popular. Many people enjoy looking at the (4) <input class="blank-input" data-ans="fantastic" placeholder="…"> art in its gallery and eating from special ice dishes. Guests have a good sleep in the cold hotel rooms under the (5) <input class="blank-input" data-ans="cozy" placeholder="…"> fur blankets.
               </div>
             </div>
-            <button class="quiz-btn" onclick="checkFillBlanks('fill-r1')">Check Answers</button>
+            <div class="fill-btn-group">
+              <button class="quiz-btn" onclick="checkFillBlanks('fill-r1')">Check Answers</button>
+              <button class="quiz-btn-outline" onclick="resetFillBlanks('fill-r1')">Reset</button>
+            </div>
           </div>
         </div>
         <div class="collapsible-section">
@@ -1370,7 +1335,7 @@ tr:nth-child(even) td { background: var(--bg2); }
         </div>
         <div class="collapsible-section">
           <div class="collapsible-header" onclick="toggleCollapsible(this)">
-            <div class="collapsible-title"><span class="sec-icon">🔤</span> Vocabulary & Idioms Review</div>
+            <div class="collapsible-title"><span class="sec-icon">🔤</span> Vocabulary &amp; Idioms Review</div>
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body">
@@ -1556,34 +1521,13 @@ tr:nth-child(even) td { background: var(--bg2); }
           </div>
           <div class="collapsible-body">
             <p style="font-size:0.85rem;color:var(--text3);margin-bottom:12px;">What do the words in italics refer to?</p>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">1. "It's quite safe." — What does <em>it</em> refer to? <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">The apple tree</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">2. "...and now she's in hospital." — Who does <em>she</em> refer to? <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">The woman whose tree crashed into her bedroom</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">3. "Shall we take them out too or leave them?" — What does <em>them</em> refer to? <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">The roots of the tree</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">4. "You'll be able to put all your old rubbish in there." — What does <em>there</em> refer to? <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">The big hole in the garden</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">5. "We did, and we also found a small metal box." — What did <em>we do</em>? <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">They found more coins (in addition to the first ones)</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">6. "It was full of jewelry." — What does <em>it</em> refer to? <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">The small metal box</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">7. "They're probably worth a fortune!" — What does <em>they</em> refer to? <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">The jewelry (rings, necklaces, bracelets, and gold coins)</div>
-            </div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">1. "It's quite safe." — What does <em>it</em> refer to?</span><span>▼ Show Answer</span></button><div class="answer-reveal">The apple tree</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">2. "...and now she's in hospital." — Who does <em>she</em> refer to?</span><span>▼ Show Answer</span></button><div class="answer-reveal">The woman whose tree crashed into her bedroom</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">3. "Shall we take them out too or leave them?" — What does <em>them</em> refer to?</span><span>▼ Show Answer</span></button><div class="answer-reveal">The roots of the tree</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">4. "You'll be able to put all your old rubbish in there." — What does <em>there</em> refer to?</span><span>▼ Show Answer</span></button><div class="answer-reveal">The big hole in the garden</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">5. "We did, and we also found a small metal box." — What did <em>we do</em>?</span><span>▼ Show Answer</span></button><div class="answer-reveal">They found more coins (in addition to the first ones)</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">6. "It was full of jewelry." — What does <em>it</em> refer to?</span><span>▼ Show Answer</span></button><div class="answer-reveal">The small metal box</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">7. "They're probably worth a fortune!" — What does <em>they</em> refer to?</span><span>▼ Show Answer</span></button><div class="answer-reveal">The jewelry (rings, necklaces, bracelets, and gold coins)</div></div>
           </div>
         </div>
         <div class="collapsible-section">
@@ -1644,7 +1588,7 @@ tr:nth-child(even) td { background: var(--bg2); }
         </div>
         <div class="collapsible-section">
           <div class="collapsible-header" onclick="toggleCollapsible(this)">
-            <div class="collapsible-title"><span class="sec-icon">🎨</span> Color Summary</div>
+            <div class="collapsible-title"><span class="sec-icon">🎨</span> Color Summary Table</div>
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body">
@@ -1696,22 +1640,10 @@ tr:nth-child(even) td { background: var(--bg2); }
           </div>
           <div class="collapsible-body">
             <p style="font-size:0.82rem;color:var(--text3);margin-bottom:12px;"><strong>a.</strong> Pajama dream &nbsp;&nbsp;<strong>b.</strong> Flying dream &nbsp;&nbsp;<strong>c.</strong> Didn't study for a test</p>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">1. "Everyone at work says that I'm doing a great job." <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">b — Flying dream (happiness, feeling like a leader)</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">2. "The concert is tomorrow, and I haven't had time to practice!" <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">c — Didn't study for a test (worried about a future event)</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">3. "I scored three goals for my soccer team last weekend." <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">b — Flying dream (good period in life, feeling happy)</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">4. "They laughed at me because I had my shirt on backwards." <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">a — Pajama dream (result of an embarrassing situation)</div>
-            </div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">1. "Everyone at work says that I'm doing a great job."</span><span>▼ Show Answer</span></button><div class="answer-reveal">b — Flying dream (happiness, feeling like a leader)</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">2. "The concert is tomorrow, and I haven't had time to practice!"</span><span>▼ Show Answer</span></button><div class="answer-reveal">c — Didn't study for a test (worried about a future event)</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">3. "I scored three goals for my soccer team last weekend."</span><span>▼ Show Answer</span></button><div class="answer-reveal">b — Flying dream (good period in life, feeling happy)</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">4. "They laughed at me because I had my shirt on backwards."</span><span>▼ Show Answer</span></button><div class="answer-reveal">a — Pajama dream (result of an embarrassing situation)</div></div>
           </div>
         </div>
         <div class="collapsible-section">
@@ -1725,42 +1657,15 @@ tr:nth-child(even) td { background: var(--bg2); }
               <p>A concept map helps you organize information visually. Write the main idea in the center, then link key ideas around it, with smaller details branching out further.</p>
             </div>
             <p style="font-size:0.85rem;color:var(--text2);margin-bottom:10px;">Complete the blanks from memory:</p>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 1: Can have 6 dreams a night, each lasts ___? <span>▼ Show</span></button>
-              <div class="answer-reveal">10 to 40 minutes</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 2: Everyone dreams, but not everyone ___? <span>▼ Show</span></button>
-              <div class="answer-reveal">remembers their dreams</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 3: Most dreams are in ___? <span>▼ Show</span></button>
-              <div class="answer-reveal">color</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 4: Why do we dream? <span>▼ Show</span></button>
-              <div class="answer-reveal">To figure out problems (Alan Siegel) / from our memories (Stickgold)</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 5: Dreams can help us ___ problems? <span>▼ Show</span></button>
-              <div class="answer-reveal">figure out</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 6: To help us learn from the ___? <span>▼ Show</span></button>
-              <div class="answer-reveal">past (past events)</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 7: The ___ of dreams? <span>▼ Show</span></button>
-              <div class="answer-reveal">types / meanings</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 8: Meet someone in pajamas = result of a/an ___ situation? <span>▼ Show</span></button>
-              <div class="answer-reveal">embarrassing</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 9: Didn't study for a test = probably ___ about a future event? <span>▼ Show</span></button>
-              <div class="answer-reveal">worried</div>
-            </div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">Blank 1: Can have 6 dreams a night, each lasts ___?</span><span>▼ Show</span></button><div class="answer-reveal">10 to 40 minutes</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">Blank 2: Everyone dreams, but not everyone ___?</span><span>▼ Show</span></button><div class="answer-reveal">remembers their dreams</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">Blank 3: Most dreams are in ___?</span><span>▼ Show</span></button><div class="answer-reveal">color</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">Blank 4: Why do we dream?</span><span>▼ Show</span></button><div class="answer-reveal">To figure out problems (Alan Siegel) / from our memories (Stickgold)</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">Blank 5: Dreams can help us ___ problems?</span><span>▼ Show</span></button><div class="answer-reveal">figure out</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">Blank 6: To help us learn from the ___?</span><span>▼ Show</span></button><div class="answer-reveal">past (past events)</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">Blank 7: The ___ of dreams?</span><span>▼ Show</span></button><div class="answer-reveal">types / meanings</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">Blank 8: Meet someone in pajamas = result of a/an ___ situation?</span><span>▼ Show</span></button><div class="answer-reveal">embarrassing</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">Blank 9: Didn't study for a test = probably ___ about a future event?</span><span>▼ Show</span></button><div class="answer-reveal">worried</div></div>
           </div>
         </div>
       </div>
@@ -1797,22 +1702,10 @@ tr:nth-child(even) td { background: var(--bg2); }
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body">
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">1. It took more than a hundred years to complete the pyramids. <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">FALSE — It took about 80 years.</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">2. The rocks were shaped into blocks mostly by women. <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">NOT GIVEN — The passage does not specify who shaped the blocks.</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">3. The pyramid builders worked in teams. <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">TRUE — Workers worked in teams, each with its own name.</div>
-            </div>
-            <div class="answer-block">
-              <button class="answer-toggle" onclick="toggleAnswer(this)">4. Male workers generally lived longer than female workers. <span>▼ Show Answer</span></button>
-              <div class="answer-reveal">TRUE — Male workers lived to 40–45, but women lived to only 30–35.</div>
-            </div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">1. It took more than a hundred years to complete the pyramids.</span><span>▼ Show Answer</span></button><div class="answer-reveal">FALSE — It took about 80 years.</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">2. The rocks were shaped into blocks mostly by women.</span><span>▼ Show Answer</span></button><div class="answer-reveal">NOT GIVEN — The passage does not specify who shaped the blocks.</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">3. The pyramid builders worked in teams.</span><span>▼ Show Answer</span></button><div class="answer-reveal">TRUE — Workers worked in teams, each with its own name.</div></div>
+            <div class="answer-block"><button class="answer-toggle" onclick="toggleAnswer(this)"><span style="flex:1;">4. Male workers generally lived longer than female workers.</span><span>▼ Show Answer</span></button><div class="answer-reveal">TRUE — Male workers lived to 40–45, but women lived to only 30–35.</div></div>
           </div>
         </div>
       </div>
@@ -1942,23 +1835,14 @@ tr:nth-child(even) td { background: var(--bg2); }
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body open">
-            <div class="grammar-rule">
-              <div class="grammar-rule-label">Definition</div>
-              <p>A noun is a word that represents a <strong>person, place, thing, or idea</strong>.</p>
-            </div>
+            <div class="grammar-rule"><div class="grammar-rule-label">Definition</div><p>A noun is a word that represents a <strong>person, place, thing, or idea</strong>.</p></div>
             <div class="vocab-list">
               <div class="vocab-item"><div class="vocab-word">Person</div><div class="vocab-meaning">teacher, student, doctor</div></div>
               <div class="vocab-item"><div class="vocab-word">Place</div><div class="vocab-meaning">park, school, city</div></div>
               <div class="vocab-item"><div class="vocab-word">Thing</div><div class="vocab-meaning">book, car, phone</div></div>
               <div class="vocab-item"><div class="vocab-word">Idea</div><div class="vocab-meaning">love, freedom, courage</div></div>
             </div>
-            <div class="grammar-rule" style="margin-top:14px;">
-              <div class="grammar-rule-label">Types of Nouns</div>
-              <p><strong>Proper Nouns:</strong> Specific names — Paris, John, Monday</p>
-              <p><strong>Common Nouns:</strong> General names — city, boy, week</p>
-              <p><strong>Countable Nouns:</strong> Can be counted — two books, three apples</p>
-              <p><strong>Uncountable Nouns:</strong> Cannot be counted — water, rice, music</p>
-            </div>
+            <div class="grammar-rule" style="margin-top:14px;"><div class="grammar-rule-label">Types of Nouns</div><p><strong>Proper Nouns:</strong> Specific names — Paris, John, Monday</p><p><strong>Common Nouns:</strong> General names — city, boy, week</p><p><strong>Countable Nouns:</strong> Can be counted — two books, three apples</p><p><strong>Uncountable Nouns:</strong> Cannot be counted — water, rice, music</p></div>
           </div>
         </div>
         <div class="collapsible-section">
@@ -1967,17 +1851,10 @@ tr:nth-child(even) td { background: var(--bg2); }
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body">
-            <div class="grammar-rule">
-              <div class="grammar-rule-label">Definition</div>
-              <p>A verb is a word that expresses <strong>action or state of being</strong>.</p>
-            </div>
+            <div class="grammar-rule"><div class="grammar-rule-label">Definition</div><p>A verb is a word that expresses <strong>action or state of being</strong>.</p></div>
             <div class="example-sentence">Action Verbs: run, write, jump</div>
             <div class="example-sentence">State Verbs: be, seem, appear</div>
-            <div class="grammar-rule" style="margin-top:12px;">
-              <div class="grammar-rule-label">Types of Verbs</div>
-              <p><strong>Regular Verbs:</strong> Follow a standard pattern — walk → walked → walked</p>
-              <p><strong>Irregular Verbs:</strong> Do not follow a standard pattern — go → went → gone</p>
-            </div>
+            <div class="grammar-rule" style="margin-top:12px;"><div class="grammar-rule-label">Types of Verbs</div><p><strong>Regular Verbs:</strong> Follow a standard pattern — walk → walked → walked</p><p><strong>Irregular Verbs:</strong> Do not follow a standard pattern — go → went → gone</p></div>
           </div>
         </div>
         <div class="collapsible-section">
@@ -1986,10 +1863,7 @@ tr:nth-child(even) td { background: var(--bg2); }
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body">
-            <div class="grammar-rule">
-              <div class="grammar-rule-label">Definition</div>
-              <p>An adjective is a word that <strong>describes or modifies a noun</strong>.</p>
-            </div>
+            <div class="grammar-rule"><div class="grammar-rule-label">Definition</div><p>An adjective is a word that <strong>describes or modifies a noun</strong>.</p></div>
             <div class="example-sentence">Descriptive: beautiful, tall, interesting</div>
             <div class="example-sentence">Quantitative: few, many, several</div>
             <div class="example-sentence">Possessive: my, your, their</div>
@@ -2001,10 +1875,7 @@ tr:nth-child(even) td { background: var(--bg2); }
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body">
-            <div class="grammar-rule">
-              <div class="grammar-rule-label">Definition</div>
-              <p>An adverb <strong>modifies a verb, adjective, or another adverb</strong>. It often ends in "-ly".</p>
-            </div>
+            <div class="grammar-rule"><div class="grammar-rule-label">Definition</div><p>An adverb <strong>modifies a verb, adjective, or another adverb</strong>. It often ends in "-ly".</p></div>
             <div class="example-sentence">Manner: quickly, slowly, carefully</div>
             <div class="example-sentence">Time: yesterday, now, soon</div>
             <div class="example-sentence">Place: here, there, everywhere</div>
@@ -2016,10 +1887,7 @@ tr:nth-child(even) td { background: var(--bg2); }
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body">
-            <div class="grammar-rule">
-              <div class="grammar-rule-label">Definition</div>
-              <p>A pronoun is a word used to <strong>replace a noun</strong>.</p>
-            </div>
+            <div class="grammar-rule"><div class="grammar-rule-label">Definition</div><p>A pronoun is a word used to <strong>replace a noun</strong>.</p></div>
             <div class="example-sentence">Personal: he, she, it, they</div>
             <div class="example-sentence">Possessive: his, hers, ours</div>
             <div class="example-sentence">Reflexive: myself, yourself, themselves</div>
@@ -2060,10 +1928,7 @@ tr:nth-child(even) td { background: var(--bg2); }
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body open">
-            <div class="grammar-rule">
-              <div class="grammar-rule-label">Definition</div>
-              <p>A simple sentence has a <strong>subject and a predicate (verb)</strong>, expressing a complete thought.</p>
-            </div>
+            <div class="grammar-rule"><div class="grammar-rule-label">Definition</div><p>A simple sentence has a <strong>subject and a predicate (verb)</strong>, expressing a complete thought.</p></div>
             <div class="example-sentence">"The cat sleeps."</div>
           </div>
         </div>
@@ -2073,10 +1938,7 @@ tr:nth-child(even) td { background: var(--bg2); }
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body">
-            <div class="grammar-rule">
-              <div class="grammar-rule-label">Definition</div>
-              <p>Two <strong>independent clauses</strong> joined by a coordinating conjunction (and, but, or).</p>
-            </div>
+            <div class="grammar-rule"><div class="grammar-rule-label">Definition</div><p>Two <strong>independent clauses</strong> joined by a coordinating conjunction (and, but, or).</p></div>
             <div class="example-sentence">"I went to the store, and I bought some milk."</div>
           </div>
         </div>
@@ -2086,10 +1948,7 @@ tr:nth-child(even) td { background: var(--bg2); }
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body">
-            <div class="grammar-rule">
-              <div class="grammar-rule-label">Definition</div>
-              <p>One <strong>independent clause</strong> + at least one <strong>dependent clause</strong>, joined by a subordinating conjunction (because, although, if).</p>
-            </div>
+            <div class="grammar-rule"><div class="grammar-rule-label">Definition</div><p>One <strong>independent clause</strong> + at least one <strong>dependent clause</strong>, joined by a subordinating conjunction (because, although, if).</p></div>
             <div class="example-sentence">"I went to the store because I needed milk."</div>
           </div>
         </div>
@@ -2099,10 +1958,7 @@ tr:nth-child(even) td { background: var(--bg2); }
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body">
-            <div class="grammar-rule">
-              <div class="grammar-rule-label">Definition</div>
-              <p>At least <strong>two independent clauses</strong> + one or more <strong>dependent clauses</strong>.</p>
-            </div>
+            <div class="grammar-rule"><div class="grammar-rule-label">Definition</div><p>At least <strong>two independent clauses</strong> + one or more <strong>dependent clauses</strong>.</p></div>
             <div class="example-sentence">"I went to the store because I needed milk, and I bought eggs."</div>
           </div>
         </div>
@@ -2129,7 +1985,7 @@ tr:nth-child(even) td { background: var(--bg2); }
       <!-- ======================== GRAMMAR: TENSES ======================== -->
       <div id="page-grammar-tenses" class="lesson-view">
         <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Three</span><span>›</span><span>Tenses</span></div>
-        <div class="lesson-title">Tenses: Present Simple & Past Simple</div>
+        <div class="lesson-title">Tenses: Present Simple &amp; Past Simple</div>
         <div class="lesson-meta">
           <div class="lesson-meta-item">🔤 Grammar · Unit 3</div>
           <button class="bookmark-btn" onclick="toggleBookmark(this,'grammar-tenses','Tenses')">⭐ Study Later</button>
@@ -2142,32 +1998,22 @@ tr:nth-child(even) td { background: var(--bg2); }
           <div class="collapsible-body open">
             <div class="grammar-rule">
               <div class="grammar-rule-label">Uses</div>
-              <p><strong>1. Habits and routines</strong></p>
-              <div class="example-sentence">"I drink coffee every morning."</div>
-              <p><strong>2. General truths or facts</strong></p>
-              <div class="example-sentence">"The Earth revolves around the Sun."</div>
-              <p><strong>3. Permanent situations</strong></p>
-              <div class="example-sentence">"She lives in New York."</div>
-              <p><strong>4. Scheduled events</strong></p>
-              <div class="example-sentence">"The train leaves at 6 p.m."</div>
-              <p><strong>5. State verbs</strong> (be, know, love, belong)</p>
-              <div class="example-sentence">"I love chocolate."</div>
+              <p><strong>1. Habits and routines</strong></p><div class="example-sentence">"I drink coffee every morning."</div>
+              <p><strong>2. General truths or facts</strong></p><div class="example-sentence">"The Earth revolves around the Sun."</div>
+              <p><strong>3. Permanent situations</strong></p><div class="example-sentence">"She lives in New York."</div>
+              <p><strong>4. Scheduled events</strong></p><div class="example-sentence">"The train leaves at 6 p.m."</div>
+              <p><strong>5. State verbs</strong> (be, know, love, belong)</p><div class="example-sentence">"I love chocolate."</div>
             </div>
             <div class="grammar-rule">
               <div class="grammar-rule-label">Form</div>
-              <p><strong>Affirmative:</strong> Subject + base verb (add -s/-es for he/she/it)</p>
-              <div class="example-sentence">"She writes every day."</div>
-              <p><strong>Negative:</strong> Subject + do/does + not + base verb</p>
-              <div class="example-sentence">"They don't like broccoli." / "He doesn't play soccer."</div>
-              <p><strong>Question:</strong> Do/Does + subject + base verb?</p>
-              <div class="example-sentence">"Do you like pizza?" / "Does she live here?"</div>
+              <p><strong>Affirmative:</strong> Subject + base verb (add -s/-es for he/she/it)</p><div class="example-sentence">"She writes every day."</div>
+              <p><strong>Negative:</strong> Subject + do/does + not + base verb</p><div class="example-sentence">"They don't like broccoli." / "He doesn't play soccer."</div>
+              <p><strong>Question:</strong> Do/Does + subject + base verb?</p><div class="example-sentence">"Do you like pizza?" / "Does she live here?"</div>
             </div>
             <div class="grammar-rule">
               <div class="grammar-rule-label">Common Spelling Changes (3rd person singular)</div>
-              <p>Verbs ending in <strong>-sh, -ch, -x, -s, -z</strong> → add <strong>-es</strong></p>
-              <div class="example-sentence">"She watches TV." / "He fixes the car."</div>
-              <p>Consonant + <strong>y</strong> → change y to <strong>i</strong>, add <strong>-es</strong></p>
-              <div class="example-sentence">"She tries hard."</div>
+              <p>Verbs ending in <strong>-sh, -ch, -x, -s, -z</strong> → add <strong>-es</strong></p><div class="example-sentence">"She watches TV." / "He fixes the car."</div>
+              <p>Consonant + <strong>y</strong> → change y to <strong>i</strong>, add <strong>-es</strong></p><div class="example-sentence">"She tries hard."</div>
             </div>
           </div>
         </div>
@@ -2179,21 +2025,15 @@ tr:nth-child(even) td { background: var(--bg2); }
           <div class="collapsible-body">
             <div class="grammar-rule">
               <div class="grammar-rule-label">Uses</div>
-              <p><strong>1. Completed actions</strong></p>
-              <div class="example-sentence">"I visited Paris last year."</div>
-              <p><strong>2. Sequential actions in the past</strong></p>
-              <div class="example-sentence">"He came home, ate dinner, and went to bed."</div>
-              <p><strong>3. States in the past</strong></p>
-              <div class="example-sentence">"She lived in New York for five years."</div>
+              <p><strong>1. Completed actions</strong></p><div class="example-sentence">"I visited Paris last year."</div>
+              <p><strong>2. Sequential actions in the past</strong></p><div class="example-sentence">"He came home, ate dinner, and went to bed."</div>
+              <p><strong>3. States in the past</strong></p><div class="example-sentence">"She lived in New York for five years."</div>
             </div>
             <div class="grammar-rule">
               <div class="grammar-rule-label">Form</div>
-              <p><strong>Affirmative:</strong> Subject + past form (regular: add -ed; irregular: varies)</p>
-              <div class="example-sentence">"I walked to the store." / "She went to the market."</div>
-              <p><strong>Negative:</strong> Subject + did + not + base verb</p>
-              <div class="example-sentence">"They didn't arrive on time."</div>
-              <p><strong>Question:</strong> Did + subject + base verb?</p>
-              <div class="example-sentence">"Did you eat dinner?" / "Did she see the movie?"</div>
+              <p><strong>Affirmative:</strong> Subject + past form (regular: add -ed; irregular: varies)</p><div class="example-sentence">"I walked to the store." / "She went to the market."</div>
+              <p><strong>Negative:</strong> Subject + did + not + base verb</p><div class="example-sentence">"They didn't arrive on time."</div>
+              <p><strong>Question:</strong> Did + subject + base verb?</p><div class="example-sentence">"Did you eat dinner?" / "Did she see the movie?"</div>
             </div>
             <div class="grammar-rule">
               <div class="grammar-rule-label">Spelling Rules for Regular Verbs (-ed)</div>
@@ -2209,7 +2049,7 @@ tr:nth-child(even) td { background: var(--bg2); }
         </div>
         <div class="collapsible-section">
           <div class="collapsible-header" onclick="toggleCollapsible(this)">
-            <div class="collapsible-title"><span class="sec-icon">🧪</span> Quiz: Present Simple & Past Simple (16 Questions)</div>
+            <div class="collapsible-title"><span class="sec-icon">🧪</span> Quiz: Present Simple &amp; Past Simple (16 Questions)</div>
             <div class="collapsible-arrow">▼</div>
           </div>
           <div class="collapsible-body">
@@ -2235,7 +2075,7 @@ tr:nth-child(even) td { background: var(--bg2); }
 
 <script>
 /* ============================================================
-   QUIZ DATA
+   QUIZ DATA — verified against textbook
    ============================================================ */
 const QUIZZES = {
   'quiz-r1': [
@@ -2254,7 +2094,7 @@ const QUIZZES = {
     { q: "6. That house is ______ wood.", opts: ["made of","built by","looked like","gotten to"], ans: 0 },
     { q: "7. In very cold countries, people sometimes wear ______ coats.", opts: ["experience","inside","sleeping bag","fur"], ans: 3 },
     { q: "8. I gave her some flowers. She was ______.", opts: ["surprising","surprised","surprisingly"], ans: 1 },
-    { q: "9. "It is so cold today." "Yes, it's ______!"", opts: ["frozen","freeze","freezing"], ans: 2 },
+    { q: "9. \"It is so cold today.\" \"Yes, it's ______!\"", opts: ["frozen","freeze","freezing"], ans: 2 },
     { q: "10. It is ______ for me to go dancing. Actually, I don't dance well.", opts: ["usual","unusual","usually"], ans: 1 }
   ],
   'quiz-r2': [
@@ -2400,10 +2240,17 @@ let quizStates = {};
    NAVIGATION
    ============================================================ */
 function showPage(pageId) {
-  // hide all
-  document.querySelectorAll('[id^="page-"]').forEach(el => el.classList.remove('active', 'fade-in'));
+  // hide all pages
+  document.querySelectorAll('[id^="page-"]').forEach(el => {
+    el.classList.remove('active', 'fade-in');
+    el.style.display = 'none';
+  });
+
   const target = document.getElementById('page-' + pageId);
   if (!target) return;
+  target.style.display = 'block';
+  // trigger reflow then add fade-in
+  void target.offsetWidth;
   target.classList.add('active', 'fade-in');
   currentPage = pageId;
 
@@ -2432,23 +2279,30 @@ function showPage(pageId) {
     completedPages.add(pageId);
     localStorage.setItem('completedPages', JSON.stringify([...completedPages]));
     updateProgress();
+    // mark card as completed on home
+    const cards = document.querySelectorAll('.unit-card');
+    cards.forEach(c => {
+      if (c.getAttribute('onclick') && c.getAttribute('onclick').includes(pageId)) {
+        c.classList.add('completed');
+      }
+    });
   }
 
-  // update review bookmarks
+  // update review
   if (pageId === 'review') renderReview();
 
-  // update bookmark btn state
+  // update bookmark btns
   setTimeout(() => updateBookmarkBtns(), 50);
 
   // close mobile sidebar
   closeSidebar();
 
-  // scroll to top
-  document.querySelector('.main-content').scrollTop = 0;
+  // FIX: scroll main content to top
+  const mc = document.getElementById('mainContent');
+  if (mc) mc.scrollTop = 0;
 }
 
 function buildQuizzesForPage(pageId) {
-  // map page to quiz IDs
   const pageQuizMap = {
     'reading-1': ['quiz-r1', 'quiz-r1-vocab'],
     'reading-2': ['quiz-r2'],
@@ -2475,7 +2329,7 @@ function buildQuizzesForPage(pageId) {
 }
 
 /* ============================================================
-   QUIZ ENGINE
+   QUIZ ENGINE — FIX: robust reset, no duplicate IDs
    ============================================================ */
 function buildQuiz(qid) {
   const data = QUIZZES[qid];
@@ -2486,41 +2340,77 @@ function buildQuiz(qid) {
   const state = { selected: new Array(data.length).fill(null), submitted: false };
   quizStates[qid] = state;
 
+  const letters = ['a','b','c','d'];
+
   data.forEach((item, qi) => {
     const div = document.createElement('div');
     div.className = 'quiz-q';
-    div.innerHTML = `<div class="quiz-q-text">${item.q}</div><div class="quiz-options" id="${qid}-opts-${qi}"></div><div class="quiz-feedback" id="${qid}-fb-${qi}"></div>`;
+
+    const qText = document.createElement('div');
+    qText.className = 'quiz-q-text';
+    qText.textContent = item.q;
+    div.appendChild(qText);
+
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'quiz-options';
+    optsDiv.id = `${qid}-opts-${qi}`;
+    div.appendChild(optsDiv);
+
+    const fb = document.createElement('div');
+    fb.className = 'quiz-feedback';
+    fb.id = `${qid}-fb-${qi}`;
+    div.appendChild(fb);
+
     container.appendChild(div);
-    const letters = ['a','b','c','d'];
-    const optsDiv = div.querySelector('.quiz-options');
+
     item.opts.forEach((opt, oi) => {
       const btn = document.createElement('div');
       btn.className = 'quiz-option';
-      btn.innerHTML = `<div class="quiz-letter">${letters[oi]}</div><span>${opt}</span>`;
-      btn.onclick = () => selectOption(qid, qi, oi, btn);
+      const letter = document.createElement('div');
+      letter.className = 'quiz-letter';
+      letter.textContent = letters[oi] || String.fromCharCode(97 + oi);
+      const txt = document.createElement('span');
+      txt.textContent = opt;
+      btn.appendChild(letter);
+      btn.appendChild(txt);
+      btn.addEventListener('click', () => selectOption(qid, qi, oi, btn));
       optsDiv.appendChild(btn);
     });
   });
 
-  const scoreDiv = document.createElement('div');
-  scoreDiv.className = 'quiz-score';
-  scoreDiv.id = `${qid}-score`;
-  scoreDiv.innerHTML = `<div class="quiz-score-num" id="${qid}-score-num"></div><div class="quiz-score-label">correct answers</div><button class="quiz-reset" onclick="resetQuiz('${qid}')">Try Again</button>`;
-  container.appendChild(scoreDiv);
-
+  // submit button
   const submitBtn = document.createElement('button');
   submitBtn.className = 'quiz-btn';
   submitBtn.textContent = 'Check Answers';
   submitBtn.id = `${qid}-submit`;
-  submitBtn.onclick = () => submitQuiz(qid);
+  submitBtn.addEventListener('click', () => submitQuiz(qid));
   container.appendChild(submitBtn);
+
+  // score
+  const scoreDiv = document.createElement('div');
+  scoreDiv.className = 'quiz-score';
+  scoreDiv.id = `${qid}-score`;
+  const scoreNum = document.createElement('div');
+  scoreNum.className = 'quiz-score-num';
+  scoreNum.id = `${qid}-score-num`;
+  const scoreLabel = document.createElement('div');
+  scoreLabel.className = 'quiz-score-label';
+  scoreLabel.textContent = 'correct answers';
+  const resetBtn = document.createElement('button');
+  resetBtn.className = 'quiz-reset';
+  resetBtn.textContent = 'Try Again';
+  resetBtn.addEventListener('click', () => resetQuiz(qid));
+  scoreDiv.appendChild(scoreNum);
+  scoreDiv.appendChild(scoreLabel);
+  scoreDiv.appendChild(resetBtn);
+  container.appendChild(scoreDiv);
 }
 
 function selectOption(qid, qi, oi, btn) {
   const state = quizStates[qid];
-  if (state.submitted) return;
-  const opts = btn.parentElement.querySelectorAll('.quiz-option');
-  opts.forEach(o => o.classList.remove('selected'));
+  if (!state || state.submitted) return;
+  const optsDiv = btn.parentElement;
+  optsDiv.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
   btn.classList.add('selected');
   state.selected[qi] = oi;
 }
@@ -2528,51 +2418,74 @@ function selectOption(qid, qi, oi, btn) {
 function submitQuiz(qid) {
   const state = quizStates[qid];
   const data = QUIZZES[qid];
+  if (!state || !data) return;
   state.submitted = true;
   let correct = 0;
+
   data.forEach((item, qi) => {
-    const opts = document.querySelectorAll(`#${qid}-opts-${qi} .quiz-option`);
+    const optsDiv = document.getElementById(`${qid}-opts-${qi}`);
     const fb = document.getElementById(`${qid}-fb-${qi}`);
+    if (!optsDiv || !fb) return;
+
+    const opts = optsDiv.querySelectorAll('.quiz-option');
     opts.forEach((opt, oi) => {
       if (oi === item.ans) opt.classList.add('correct');
       if (state.selected[qi] === oi && oi !== item.ans) opt.classList.add('wrong');
     });
+
     if (state.selected[qi] === item.ans) {
       correct++;
       fb.className = 'quiz-feedback show correct';
       fb.textContent = '✓ Correct!';
     } else {
       fb.className = 'quiz-feedback show wrong';
-      const ansText = item.opts[item.ans];
-      fb.textContent = `✗ The correct answer is: ${ansText}`;
+      fb.textContent = `✗ Correct answer: ${item.opts[item.ans]}`;
     }
   });
+
   const scoreEl = document.getElementById(`${qid}-score`);
   const scoreNum = document.getElementById(`${qid}-score-num`);
-  scoreNum.textContent = `${correct} / ${data.length}`;
-  scoreEl.classList.add('show');
-  document.getElementById(`${qid}-submit`).style.display = 'none';
+  if (scoreEl && scoreNum) {
+    scoreNum.textContent = `${correct} / ${data.length}`;
+    scoreEl.classList.add('show');
+  }
+  const submitBtn = document.getElementById(`${qid}-submit`);
+  if (submitBtn) submitBtn.style.display = 'none';
 }
 
 function resetQuiz(qid) {
+  // FIX: fully rebuild quiz, remove built flag
   const container = document.getElementById(qid);
+  if (!container) return;
   container.removeAttribute('data-built');
   buildQuiz(qid);
   container.dataset.built = '1';
 }
 
 /* ============================================================
-   FILL IN THE BLANKS
+   FILL IN THE BLANKS — FIX: added resetFillBlanks
    ============================================================ */
 function checkFillBlanks(containerId) {
   const container = document.getElementById(containerId);
+  if (!container) return;
   const inputs = container.querySelectorAll('.blank-input');
   inputs.forEach(inp => {
     const userVal = inp.value.trim().toLowerCase();
-    const ans = inp.dataset.ans.toLowerCase();
+    const ans = (inp.dataset.ans || '').toLowerCase();
     inp.classList.remove('correct', 'wrong');
+    if (userVal === '') return;
     if (userVal === ans) inp.classList.add('correct');
-    else if (userVal !== '') inp.classList.add('wrong');
+    else inp.classList.add('wrong');
+  });
+}
+
+function resetFillBlanks(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const inputs = container.querySelectorAll('.blank-input');
+  inputs.forEach(inp => {
+    inp.value = '';
+    inp.classList.remove('correct', 'wrong');
   });
 }
 
@@ -2588,12 +2501,13 @@ function toggleCollapsible(header) {
 }
 
 /* ============================================================
-   ANSWER REVEAL
+   ANSWER REVEAL — FIX: toggle text in span
    ============================================================ */
 function toggleAnswer(btn) {
   const reveal = btn.nextElementSibling;
+  if (!reveal) return;
   reveal.classList.toggle('show');
-  const span = btn.querySelector('span');
+  const span = btn.querySelector('span:last-child');
   if (span) span.textContent = reveal.classList.contains('show') ? '▲ Hide' : '▼ Show Answer';
 }
 
@@ -2627,6 +2541,7 @@ function toggleBookmark(btn, pageId, label) {
   }
   localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
 }
+
 function updateBookmarkBtns() {
   document.querySelectorAll('.bookmark-btn').forEach(btn => {
     const onclick = btn.getAttribute('onclick') || '';
@@ -2639,8 +2554,10 @@ function updateBookmarkBtns() {
     }
   });
 }
+
 function renderReview() {
   const list = document.getElementById('reviewList');
+  if (!list) return;
   if (!bookmarks.length) {
     list.innerHTML = '<div class="review-empty">No bookmarked items yet. Use the ⭐ bookmark button on any lesson.</div>';
     return;
@@ -2652,6 +2569,7 @@ function renderReview() {
     </div>
   `).join('');
 }
+
 function removeBookmark(pageId) {
   bookmarks = bookmarks.filter(b => b.id !== pageId);
   localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
@@ -2665,11 +2583,13 @@ function removeBookmark(pageId) {
 const totalPages = 16;
 function updateProgress() {
   const pct = Math.round((completedPages.size / totalPages) * 100);
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressPct').textContent = pct + '%';
-  document.getElementById('progressText').textContent = pct + '%';
+  const fill = document.getElementById('progressFill');
+  const pctEl = document.getElementById('progressPct');
+  const textEl = document.getElementById('progressText');
+  if (fill) fill.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (textEl) textEl.textContent = pct + '%';
 }
-updateProgress();
 
 /* ============================================================
    SEARCH
@@ -2679,19 +2599,26 @@ function doSearch(val) {
   if (!val.trim()) { resultsDiv.innerHTML = ''; resultsDiv.classList.remove('show'); return; }
   const q = val.toLowerCase();
   const matches = SEARCH_INDEX.filter(item => item.label.toLowerCase().includes(q));
-  if (!matches.length) { resultsDiv.innerHTML = '<div class="search-result-item">No results found</div>'; resultsDiv.classList.add('show'); return; }
+  if (!matches.length) {
+    resultsDiv.innerHTML = '<div class="search-result-item">No results found</div>';
+    resultsDiv.classList.add('show');
+    return;
+  }
   resultsDiv.innerHTML = matches.slice(0, 8).map(m =>
     `<div class="search-result-item" onmousedown="showPage('${m.page}')">${m.label} <span class="search-result-cat">${m.cat}</span></div>`
   ).join('');
   resultsDiv.classList.add('show');
 }
+
 function showSearchResults() {
   const val = document.getElementById('searchInput').value;
   if (val.trim()) doSearch(val);
 }
+
 function hideSearchResults() {
   setTimeout(() => {
-    document.getElementById('searchResults').classList.remove('show');
+    const r = document.getElementById('searchResults');
+    if (r) r.classList.remove('show');
   }, 200);
 }
 
@@ -2708,10 +2635,22 @@ function closeSidebar() {
 }
 
 /* ============================================================
-   INIT
+   INIT — FIX: hide all pages first, then show home
    ============================================================ */
+document.querySelectorAll('[id^="page-"]').forEach(el => { el.style.display = 'none'; });
+updateProgress();
+
+// mark already-completed cards
+completedPages.forEach(pageId => {
+  document.querySelectorAll('.unit-card').forEach(c => {
+    if (c.getAttribute('onclick') && c.getAttribute('onclick').includes(pageId)) {
+      c.classList.add('completed');
+    }
+  });
+});
+
 showPage('home');
 updateBookmarkBtns();
 </script>
 </body>
-  </html>
+   </html>
