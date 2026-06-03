@@ -1,0 +1,2717 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Learning Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS VARIABLES & RESET
+   ============================================================ */
+:root {
+  --bg: #f7f4ef;
+  --bg2: #eee9e0;
+  --surface: #ffffff;
+  --surface2: #f0ebe2;
+  --border: #d8d0c4;
+  --text: #1a1612;
+  --text2: #4a4038;
+  --text3: #7a6e62;
+  --accent: #c0392b;
+  --accent2: #8b2318;
+  --gold: #b8860b;
+  --gold2: #e8c84a;
+  --green: #2d6a4f;
+  --green2: #52b788;
+  --blue: #1d3557;
+  --blue2: #457b9d;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-sm: 6px;
+  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Source Serif 4', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+[data-theme="dark"] {
+  --bg: #0f0e0c;
+  --bg2: #1a1814;
+  --surface: #211e1a;
+  --surface2: #2a2620;
+  --border: #3a342c;
+  --text: #f0ebe2;
+  --text2: #c8bfb0;
+  --text3: #8a7e70;
+  --accent: #e05a4b;
+  --accent2: #c0392b;
+  --gold: #e8c84a;
+  --gold2: #b8860b;
+  --green: #52b788;
+  --green2: #2d6a4f;
+  --blue: #a8c8e8;
+  --blue2: #457b9d;
+  --shadow: 0 2px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  transition: background var(--transition), color var(--transition);
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+button { cursor: pointer; font-family: var(--font-body); }
+img { max-width: 100%; }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.app-wrapper { display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 100;
+  transition: transform var(--transition), background var(--transition);
+}
+.sidebar-logo {
+  padding: 24px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo h1 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+.sidebar-logo span {
+  display: block;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+}
+.sidebar-search {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-search input {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px 8px 32px;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--transition);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a6e62' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 10px center;
+}
+.sidebar-search input:focus { border-color: var(--accent); }
+.sidebar-nav { padding: 8px 0; flex: 1; }
+.nav-section-label {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  padding: 12px 20px 4px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  font-size: 0.84rem;
+  color: var(--text2);
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all var(--transition);
+  user-select: none;
+}
+.nav-item:hover { background: var(--bg2); color: var(--text); }
+.nav-item.active { background: var(--bg2); border-left-color: var(--accent); color: var(--accent); font-weight: 600; }
+.nav-item .nav-icon { font-size: 1rem; flex-shrink: 0; }
+.nav-sub { padding-left: 16px; }
+.nav-sub .nav-item { font-size: 0.78rem; padding: 6px 20px; }
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.btn-icon {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  color: var(--text2);
+  transition: all var(--transition);
+}
+.btn-icon:hover { background: var(--border); color: var(--text); }
+
+/* MAIN */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+/* TOP BAR */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 32px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  gap: 16px;
+}
+.topbar-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.progress-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--text3);
+}
+.progress-bar {
+  width: 100px;
+  height: 5px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
+.btn-menu {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--text2);
+  padding: 4px;
+}
+
+/* CONTENT AREA */
+.content-area { padding: 40px 32px; max-width: 900px; }
+
+/* HERO */
+.hero {
+  background: linear-gradient(135deg, var(--blue) 0%, #2c4a6e 60%, var(--accent2) 100%);
+  border-radius: var(--radius);
+  padding: 56px 48px;
+  color: white;
+  margin-bottom: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 200px; height: 200px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -50px; left: 40%;
+  width: 300px; height: 300px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 50%;
+}
+.hero-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 99px;
+  padding: 4px 14px;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+}
+.hero h2 {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 14px;
+}
+.hero p {
+  font-size: 1rem;
+  opacity: 0.85;
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+.hero-cards {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.hero-card {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 18px;
+  cursor: pointer;
+  transition: all var(--transition);
+  backdrop-filter: blur(4px);
+}
+.hero-card:hover { background: rgba(255,255,255,0.22); transform: translateY(-2px); }
+.hero-card-icon { font-size: 1.4rem; }
+.hero-card-label { font-size: 0.8rem; font-weight: 600; margin-top: 4px; }
+.hero-card-sub { font-size: 0.7rem; opacity: 0.7; margin-top: 2px; }
+
+/* SECTION HEADERS */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.section-header h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.section-badge {
+  background: var(--accent);
+  color: white;
+  border-radius: 99px;
+  padding: 2px 12px;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* CARDS GRID */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 40px; }
+.unit-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.unit-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--card-color, var(--accent));
+}
+.unit-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+.unit-card.completed::after {
+  content: '✓';
+  position: absolute;
+  top: 12px; right: 12px;
+  background: var(--green);
+  color: white;
+  border-radius: 50%;
+  width: 22px; height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+.unit-card-icon { font-size: 1.6rem; margin-bottom: 10px; }
+.unit-card-num {
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  margin-bottom: 4px;
+}
+.unit-card h4 { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.unit-card p { font-size: 0.78rem; color: var(--text3); line-height: 1.5; }
+.unit-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
+.unit-tag {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--bg2);
+  color: var(--text3);
+}
+
+/* LESSON VIEW */
+.lesson-view { display: none; }
+.lesson-view.active { display: block; }
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text3);
+  margin-bottom: 24px;
+  font-family: var(--font-mono);
+}
+.breadcrumb span { color: var(--text3); }
+.breadcrumb a { color: var(--text2); cursor: pointer; }
+.breadcrumb a:hover { color: var(--accent); text-decoration: none; }
+
+.lesson-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.lesson-meta {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.lesson-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  color: var(--text3);
+}
+
+/* PASSAGE CARD */
+.passage-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow);
+}
+.passage-header {
+  background: var(--blue);
+  color: white;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+[data-theme="dark"] .passage-header { background: #1d3557; }
+.passage-header h4 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
+.passage-body { padding: 28px; }
+.passage-body p { margin-bottom: 14px; font-size: 0.95rem; line-height: 1.85; }
+.passage-body p:last-child { margin-bottom: 0; }
+.vocab-inline {
+  border-bottom: 2px solid var(--gold);
+  cursor: help;
+  position: relative;
+}
+
+/* COLLAPSIBLE */
+.collapsible-section { margin-bottom: 16px; }
+.collapsible-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--transition);
+}
+.collapsible-header:hover { background: var(--bg2); }
+.collapsible-header.open { border-radius: var(--radius-sm) var(--radius-sm) 0 0; background: var(--bg2); }
+.collapsible-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+.collapsible-title .sec-icon { font-size: 1.1rem; }
+.collapsible-arrow { transition: transform var(--transition); font-size: 0.8rem; color: var(--text3); }
+.collapsible-header.open .collapsible-arrow { transform: rotate(180deg); }
+.collapsible-body {
+  display: none;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+.collapsible-body.open { display: block; }
+
+/* QUIZ */
+.quiz-container { }
+.quiz-q {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+}
+.quiz-q-text { font-size: 0.9rem; font-weight: 600; margin-bottom: 12px; color: var(--text); }
+.quiz-options { display: flex; flex-direction: column; gap: 6px; }
+.quiz-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text2);
+  transition: all var(--transition);
+  background: var(--bg);
+  user-select: none;
+}
+.quiz-option:hover:not(.selected):not(.correct):not(.wrong) { background: var(--bg2); border-color: var(--text3); }
+.quiz-option.selected { border-color: var(--blue2); background: rgba(69,123,157,0.08); }
+.quiz-option.correct { border-color: var(--green); background: rgba(82,183,136,0.12); color: var(--green); font-weight: 600; }
+.quiz-option.wrong { border-color: var(--accent); background: rgba(192,57,43,0.08); color: var(--accent); }
+.quiz-letter {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  flex-shrink: 0;
+  color: var(--text2);
+  margin-top: 1px;
+}
+.quiz-option.correct .quiz-letter { background: var(--green); color: white; }
+.quiz-option.wrong .quiz-letter { background: var(--accent); color: white; }
+.quiz-feedback {
+  display: none;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct { background: rgba(82,183,136,0.1); color: var(--green); border: 1px solid var(--green); }
+.quiz-feedback.wrong { background: rgba(192,57,43,0.08); color: var(--accent); border: 1px solid var(--accent); }
+.quiz-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 24px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  transition: all var(--transition);
+  margin-top: 16px;
+}
+.quiz-btn:hover { background: var(--accent2); }
+.quiz-score {
+  display: none;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-top: 16px;
+  text-align: center;
+}
+.quiz-score.show { display: block; }
+.quiz-score-num { font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--accent); }
+.quiz-score-label { font-size: 0.82rem; color: var(--text3); margin-top: 4px; }
+.quiz-reset { background: none; border: 1px solid var(--border); color: var(--text2); border-radius: var(--radius-sm); padding: 6px 16px; font-size: 0.8rem; margin-top: 10px; transition: all var(--transition); }
+.quiz-reset:hover { background: var(--bg2); }
+
+/* ANSWER REVEAL */
+.answer-block {
+  background: var(--bg2);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.answer-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--text3);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-body);
+  transition: color var(--transition);
+}
+.answer-toggle:hover { color: var(--accent); }
+.answer-reveal {
+  display: none;
+  padding: 10px 16px 14px;
+  font-size: 0.85rem;
+  color: var(--green);
+  font-weight: 600;
+  border-top: 1px solid var(--border);
+}
+.answer-reveal.show { display: block; }
+
+/* FILL IN BLANK */
+.fill-blank-container { }
+.fill-blank-text {
+  font-size: 0.95rem;
+  line-height: 2.2;
+  margin-bottom: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+}
+.blank-input {
+  display: inline-block;
+  border: none;
+  border-bottom: 2px solid var(--accent);
+  background: transparent;
+  padding: 2px 8px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--text);
+  outline: none;
+  min-width: 90px;
+  text-align: center;
+  transition: border-color var(--transition);
+}
+.blank-input:focus { border-color: var(--blue2); }
+.blank-input.correct { border-color: var(--green); color: var(--green); }
+.blank-input.wrong { border-color: var(--accent); color: var(--accent); }
+
+/* GRAMMAR BOXES */
+.grammar-rule {
+  background: linear-gradient(135deg, rgba(29,53,87,0.06), rgba(29,53,87,0.02));
+  border: 1px solid var(--blue2);
+  border-left: 4px solid var(--blue);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+[data-theme="dark"] .grammar-rule { background: rgba(168,200,232,0.05); }
+.grammar-rule-label {
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--blue2);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.grammar-rule p { font-size: 0.88rem; color: var(--text2); margin-bottom: 8px; }
+.grammar-rule p:last-child { margin-bottom: 0; }
+.example-sentence {
+  background: var(--bg2);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-style: italic;
+  font-size: 0.87rem;
+  color: var(--text2);
+  margin: 6px 0;
+  border-left: 3px solid var(--gold);
+}
+
+.summary-box {
+  background: linear-gradient(135deg, rgba(184,134,11,0.08), rgba(184,134,11,0.02));
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+.summary-box h5 {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.summary-box ul { padding-left: 18px; }
+.summary-box li { font-size: 0.85rem; color: var(--text2); margin-bottom: 5px; }
+
+/* VOCAB LIST */
+.vocab-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 16px; }
+.vocab-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  transition: all var(--transition);
+}
+.vocab-item:hover { border-color: var(--gold); box-shadow: var(--shadow); }
+.vocab-word { font-weight: 700; font-size: 0.9rem; color: var(--text); margin-bottom: 2px; }
+.vocab-meaning { font-size: 0.78rem; color: var(--text3); }
+.vocab-example { font-style: italic; font-size: 0.76rem; color: var(--text3); margin-top: 4px; }
+
+/* DISCUSSION */
+.discussion-list { list-style: none; }
+.discussion-list li {
+  padding: 12px 16px;
+  border-left: 3px solid var(--gold);
+  background: var(--surface);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-bottom: 8px;
+  font-size: 0.88rem;
+  color: var(--text2);
+}
+
+/* WRITING PROMPT */
+.writing-prompt {
+  background: linear-gradient(135deg, rgba(45,106,79,0.08), rgba(45,106,79,0.02));
+  border: 1px solid var(--green);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+.writing-prompt-label {
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--green);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.writing-prompt p { font-size: 0.88rem; color: var(--text2); margin-bottom: 6px; }
+.writing-prompt ul { padding-left: 18px; }
+.writing-prompt ul li { font-size: 0.85rem; color: var(--text2); margin-bottom: 4px; }
+
+/* STUDY LATER */
+.bookmark-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  color: var(--text3);
+  transition: all var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.bookmark-btn:hover, .bookmark-btn.bookmarked { color: var(--gold); border-color: var(--gold); }
+.review-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+.review-empty { font-size: 0.85rem; color: var(--text3); text-align: center; padding: 16px; }
+.review-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--text2);
+}
+.review-item:last-child { border-bottom: none; }
+.review-remove { background: none; border: none; color: var(--text3); font-size: 1rem; cursor: pointer; }
+.review-remove:hover { color: var(--accent); }
+
+/* TABLES */
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 12px 0; }
+th { background: var(--bg2); padding: 8px 12px; text-align: left; font-weight: 600; border: 1px solid var(--border); }
+td { padding: 8px 12px; border: 1px solid var(--border); }
+tr:nth-child(even) td { background: var(--bg2); }
+
+/* PRINT */
+@media print {
+  .sidebar, .topbar, .btn-icon, .quiz-btn, .bookmark-btn { display: none !important; }
+  .main-content { overflow: visible; }
+  .content-area { padding: 0; }
+  * { color: black !important; background: white !important; box-shadow: none !important; }
+}
+
+/* MOBILE */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 99;
+}
+.overlay.show { display: block; }
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    transform: translateX(-100%);
+    z-index: 200;
+    box-shadow: var(--shadow-lg);
+  }
+  .sidebar.open { transform: translateX(0); }
+  .btn-menu { display: flex; align-items: center; justify-content: center; }
+  .content-area { padding: 20px 16px; }
+  .hero { padding: 32px 24px; }
+  .hero h2 { font-size: 1.7rem; }
+  .topbar { padding: 12px 16px; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .vocab-list { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .vocab-list { grid-template-columns: 1fr; }
+  .hero-cards { flex-direction: column; }
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.fade-in { animation: fadeIn 0.35s ease forwards; }
+
+/* SEARCH RESULTS */
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 16px;
+  right: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  z-index: 300;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  display: none;
+}
+.search-results.show { display: block; }
+.search-result-item {
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+  color: var(--text2);
+}
+.search-result-item:hover { background: var(--bg2); color: var(--accent); }
+.search-result-item:last-child { border-bottom: none; }
+.search-result-cat {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-left: 6px;
+}
+.sidebar-search { position: relative; }
+
+/* HOMEPAGE NAV */
+.home-view { }
+</style>
+</head>
+<body>
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="app-wrapper">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <h1>English Learning Platform</h1>
+      <span>Interactive Study Guide</span>
+    </div>
+    <div class="sidebar-search">
+      <input type="text" id="searchInput" placeholder="Search lessons, vocabulary…" oninput="doSearch(this.value)" onfocus="showSearchResults()" onblur="hideSearchResults()">
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav">
+      <div class="nav-section-label">Overview</div>
+      <div class="nav-item active" onclick="showPage('home')" data-page="home">
+        <span class="nav-icon">🏠</span> Home
+      </div>
+      <div class="nav-item" onclick="showPage('review')" data-page="review">
+        <span class="nav-icon">⭐</span> Study Later
+      </div>
+
+      <div class="nav-section-label">Part One — Writing</div>
+      <div class="nav-item" onclick="showPage('essay-intro')" data-page="essay-intro">
+        <span class="nav-icon">✍️</span> Introduction to Writing
+      </div>
+      <div class="nav-item" onclick="showPage('essay-structure')" data-page="essay-structure">
+        <span class="nav-icon">📐</span> Essay Structure
+      </div>
+      <div class="nav-item" onclick="showPage('grammar-accuracy')" data-page="grammar-accuracy">
+        <span class="nav-icon">🎯</span> Grammar & Accuracy
+      </div>
+
+      <div class="nav-section-label">Part Two — Reading</div>
+      <div class="nav-item" onclick="showPage('reading-1')" data-page="reading-1">
+        <span class="nav-icon">🏨</span> 1. The Ice Hotel
+      </div>
+      <div class="nav-item" onclick="showPage('reading-2')" data-page="reading-2">
+        <span class="nav-icon">💧</span> 2. The Importance of Water
+      </div>
+      <div class="nav-item" onclick="showPage('reading-3')" data-page="reading-3">
+        <span class="nav-icon">🌍</span> 3. Borrowed Words
+      </div>
+      <div class="nav-item" onclick="showPage('reading-4')" data-page="reading-4">
+        <span class="nav-icon">🌳</span> 4. The Apple Tree
+      </div>
+      <div class="nav-item" onclick="showPage('reading-5')" data-page="reading-5">
+        <span class="nav-icon">🎨</span> 5. Seeing Red
+      </div>
+      <div class="nav-item" onclick="showPage('reading-6')" data-page="reading-6">
+        <span class="nav-icon">💭</span> 6. Understanding Dreams
+      </div>
+      <div class="nav-item" onclick="showPage('reading-7')" data-page="reading-7">
+        <span class="nav-icon">🔺</span> 7. Wonders of Egypt
+      </div>
+      <div class="nav-item" onclick="showPage('reading-8')" data-page="reading-8">
+        <span class="nav-icon">🪐</span> 8. The Solar System
+      </div>
+      <div class="nav-item" onclick="showPage('reading-9')" data-page="reading-9">
+        <span class="nav-icon">🏃</span> 9. The Importance of Exercise
+      </div>
+      <div class="nav-item" onclick="showPage('reading-10')" data-page="reading-10">
+        <span class="nav-icon">🌐</span> 10. History of the Internet
+      </div>
+
+      <div class="nav-section-label">Part Three — Grammar</div>
+      <div class="nav-item" onclick="showPage('grammar-pos')" data-page="grammar-pos">
+        <span class="nav-icon">📚</span> Parts of Speech
+      </div>
+      <div class="nav-item" onclick="showPage('grammar-sentence')" data-page="grammar-sentence">
+        <span class="nav-icon">🧱</span> Sentence Structure
+      </div>
+      <div class="nav-item" onclick="showPage('grammar-tenses')" data-page="grammar-tenses">
+        <span class="nav-icon">⏱️</span> Tenses
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-icon" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
+      <button class="btn-icon" onclick="window.print()" title="Print">🖨️</button>
+      <div style="flex:1; font-size:0.72rem; font-family:var(--font-mono); color:var(--text3);">
+        Progress: <span id="progressText">0%</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="btn-menu" onclick="openSidebar()">☰</button>
+        <div class="topbar-title" id="topbarTitle">Home</div>
+      </div>
+      <div class="topbar-right">
+        <div class="progress-bar-wrap">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+          <span id="progressPct">0%</span>
+        </div>
+        <button class="btn-icon" onclick="toggleDark()">🌙</button>
+      </div>
+    </div>
+
+    <div class="content-area">
+
+      <!-- ======================== HOME ======================== -->
+      <div id="page-home" class="home-view fade-in">
+        <div class="hero">
+          <div class="hero-tag">📖 English Textbook — Interactive Edition</div>
+          <h2>Master English with Confidence</h2>
+          <p>A complete, interactive learning platform covering essay writing, reading comprehension, and grammar — faithfully adapted from your textbook.</p>
+          <div class="hero-cards">
+            <div class="hero-card" onclick="showPage('essay-intro')">
+              <div class="hero-card-icon">✍️</div>
+              <div class="hero-card-label">Part One</div>
+              <div class="hero-card-sub">Essay Writing</div>
+            </div>
+            <div class="hero-card" onclick="showPage('reading-1')">
+              <div class="hero-card-icon">📖</div>
+              <div class="hero-card-label">Part Two</div>
+              <div class="hero-card-sub">Reading Comprehension</div>
+            </div>
+            <div class="hero-card" onclick="showPage('grammar-pos')">
+              <div class="hero-card-icon">🔤</div>
+              <div class="hero-card-label">Part Three</div>
+              <div class="hero-card-sub">Grammar Practice</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h3>Part One — Essay Writing</h3>
+          <span class="section-badge">3 Lessons</span>
+        </div>
+        <div class="cards-grid" style="margin-bottom:40px;">
+          <div class="unit-card" style="--card-color:#c0392b;" onclick="showPage('essay-intro')">
+            <div class="unit-card-icon">✍️</div>
+            <div class="unit-card-num">Writing · Lesson 1</div>
+            <h4>Introduction to Writing</h4>
+            <p>The art of writing, types of essays, and the purpose of written communication.</p>
+            <div class="unit-card-footer"><span class="unit-tag">Concept</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#1d3557;" onclick="showPage('essay-structure')">
+            <div class="unit-card-icon">📐</div>
+            <div class="unit-card-num">Writing · Lesson 2</div>
+            <h4>Essay Structure</h4>
+            <p>Introduction, body paragraphs, conclusion, and how to build each section effectively.</p>
+            <div class="unit-card-footer"><span class="unit-tag">Structure</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#2d6a4f;" onclick="showPage('grammar-accuracy')">
+            <div class="unit-card-icon">🎯</div>
+            <div class="unit-card-num">Writing · Lesson 3</div>
+            <h4>Grammar & Accuracy</h4>
+            <p>Sentence variety, punctuation, spelling, and writing with precision.</p>
+            <div class="unit-card-footer"><span class="unit-tag">Accuracy</span></div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h3>Part Two — Reading Comprehension</h3>
+          <span class="section-badge">10 Passages</span>
+        </div>
+        <div class="cards-grid" style="margin-bottom:40px;">
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-1')">
+            <div class="unit-card-icon">🏨</div>
+            <div class="unit-card-num">Reading · Passage 1</div>
+            <h4>The Ice Hotel</h4>
+            <p>Discover Canada's famous hotel made entirely of ice and snow.</p>
+            <div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-2')">
+            <div class="unit-card-icon">💧</div>
+            <div class="unit-card-num">Reading · Passage 2</div>
+            <h4>The Importance of Water</h4>
+            <p>How water benefits the body and how much we really need each day.</p>
+            <div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-3')">
+            <div class="unit-card-icon">🌍</div>
+            <div class="unit-card-num">Reading · Passage 3</div>
+            <h4>Borrowed Words</h4>
+            <p>Shampoo, ketchup, sauna — tracing English words back to their origins.</p>
+            <div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-4')">
+            <div class="unit-card-icon">🌳</div>
+            <div class="unit-card-num">Reading · Passage 4</div>
+            <h4>The Apple Tree</h4>
+            <p>A short story about cutting down a tree and discovering hidden treasure.</p>
+            <div class="unit-card-footer"><span class="unit-tag">6 Questions</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-5')">
+            <div class="unit-card-icon">🎨</div>
+            <div class="unit-card-num">Reading · Passage 5</div>
+            <h4>Seeing Red</h4>
+            <p>How colors affect our emotions, behavior, and the choices we make.</p>
+            <div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-6')">
+            <div class="unit-card-icon">💭</div>
+            <div class="unit-card-num">Reading · Passage 6</div>
+            <h4>Understanding Dreams</h4>
+            <p>The science of dreaming, dream types, and what they might mean.</p>
+            <div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-7')">
+            <div class="unit-card-icon">🔺</div>
+            <div class="unit-card-num">Reading · Passage 7</div>
+            <h4>Wonders of Egypt</h4>
+            <p>Who really built the pyramids of Giza, and what was their life like?</p>
+            <div class="unit-card-footer"><span class="unit-tag">5 Questions</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-8')">
+            <div class="unit-card-icon">🪐</div>
+            <div class="unit-card-num">Reading · Passage 8</div>
+            <h4>The Solar System</h4>
+            <p>Planets, moons, dwarf planets, and the structure of our solar system.</p>
+            <div class="unit-card-footer"><span class="unit-tag">10 Questions</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-9')">
+            <div class="unit-card-icon">🏃</div>
+            <div class="unit-card-num">Reading · Passage 9</div>
+            <h4>The Importance of Exercise</h4>
+            <p>Physical activity, mental health, and maintaining a healthy lifestyle.</p>
+            <div class="unit-card-footer"><span class="unit-tag">10 Questions</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#457b9d;" onclick="showPage('reading-10')">
+            <div class="unit-card-icon">🌐</div>
+            <div class="unit-card-num">Reading · Passage 10</div>
+            <h4>History of the Internet</h4>
+            <p>From ARPANET in the 1960s to the World Wide Web and modern life.</p>
+            <div class="unit-card-footer"><span class="unit-tag">10 Questions</span></div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h3>Part Three — Grammar</h3>
+          <span class="section-badge">3 Units</span>
+        </div>
+        <div class="cards-grid">
+          <div class="unit-card" style="--card-color:#b8860b;" onclick="showPage('grammar-pos')">
+            <div class="unit-card-icon">📚</div>
+            <div class="unit-card-num">Grammar · Unit 1</div>
+            <h4>Parts of Speech</h4>
+            <p>Nouns, verbs, adjectives, adverbs, pronouns — with examples and a quiz.</p>
+            <div class="unit-card-footer"><span class="unit-tag">3 Questions</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#b8860b;" onclick="showPage('grammar-sentence')">
+            <div class="unit-card-icon">🧱</div>
+            <div class="unit-card-num">Grammar · Unit 2</div>
+            <h4>Sentence Structure</h4>
+            <p>Simple, compound, complex, and compound-complex sentences explained.</p>
+            <div class="unit-card-footer"><span class="unit-tag">2 Questions</span></div>
+          </div>
+          <div class="unit-card" style="--card-color:#b8860b;" onclick="showPage('grammar-tenses')">
+            <div class="unit-card-icon">⏱️</div>
+            <div class="unit-card-num">Grammar · Unit 3</div>
+            <h4>Tenses</h4>
+            <p>Present Simple and Past Simple: forms, uses, spelling rules, and a 16-question quiz.</p>
+            <div class="unit-card-footer"><span class="unit-tag">16 Questions</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== STUDY LATER ======================== -->
+      <div id="page-review" class="lesson-view">
+        <div class="lesson-title">⭐ Study Later</div>
+        <p style="font-size:0.9rem;color:var(--text3);margin-bottom:24px;">Items you've bookmarked for review will appear here.</p>
+        <div class="review-section">
+          <div id="reviewList"><div class="review-empty">No bookmarked items yet. Use the ⭐ bookmark button on any lesson.</div></div>
+        </div>
+      </div>
+
+      <!-- ======================== ESSAY INTRO ======================== -->
+      <div id="page-essay-intro" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part One</span><span>›</span><span>Introduction</span></div>
+        <div class="lesson-title">Introduction to Writing</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">✍️ Part One — Essay Writing</div>
+          <div class="lesson-meta-item">📄 Lesson 1</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'essay-intro','Introduction to Writing')">⭐ Study Later</button>
+        </div>
+        <div class="passage-card">
+          <div class="passage-header"><h4>Writing is an Art!</h4></div>
+          <div class="passage-body">
+            <p>Painters need a brush, musicians need notes, and writers need words and ideas. Carefully selected words are the tools that a writer uses to express his ideas and turn his average writing into beautiful works of art.</p>
+            <p>An essay is a group of paragraphs on a particular topic.</p>
+            <p>People write for different purposes. These purposes can be grouped under four major types of writing.</p>
+          </div>
+        </div>
+        <div class="section-header"><h3>The Four Types of Essays</h3></div>
+        <div class="vocab-list">
+          <div class="vocab-item"><div class="vocab-word">📖 Narrative Essay</div><div class="vocab-meaning">Tells a story or recounts events</div></div>
+          <div class="vocab-item"><div class="vocab-word">🖼️ Descriptive Essay</div><div class="vocab-meaning">Describes a person, place, thing, or experience</div></div>
+          <div class="vocab-item"><div class="vocab-word">💡 Expository Essay</div><div class="vocab-meaning">Explains or informs — based on facts</div></div>
+          <div class="vocab-item"><div class="vocab-word">⚖️ Argumentative Essay</div><div class="vocab-meaning">Presents an argument and supports it with evidence</div></div>
+        </div>
+        <div style="margin-top:28px;" class="summary-box">
+          <h5>📌 Key Takeaway</h5>
+          <ul>
+            <li>Writing is an art that requires carefully chosen words.</li>
+            <li>An essay = a group of paragraphs on one topic.</li>
+            <li>The four types of essays are: Narrative, Descriptive, Expository, and Argumentative.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ======================== ESSAY STRUCTURE ======================== -->
+      <div id="page-essay-structure" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part One</span><span>›</span><span>Essay Structure</span></div>
+        <div class="lesson-title">Essay Structure</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">✍️ Part One — Essay Writing</div>
+          <div class="lesson-meta-item">📄 Lesson 2</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'essay-structure','Essay Structure')">⭐ Study Later</button>
+        </div>
+        <div class="summary-box">
+          <h5>🗂️ Essay Has Three Sections</h5>
+          <ul>
+            <li><strong>Introduction</strong> — the beginning (1 paragraph)</li>
+            <li><strong>Body Paragraphs</strong> — the middle (supporting ideas)</li>
+            <li><strong>Conclusion</strong> — the end (closing paragraph)</li>
+          </ul>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header open" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">1️⃣</span> The Introduction</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body open">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Function</div>
+              <p>The opening paragraph should get to grips with the set topic immediately. It moves from <strong>general to specific</strong>.</p>
+            </div>
+            <p style="font-size:0.88rem;color:var(--text2);margin-bottom:10px;">A good introduction:</p>
+            <ul style="padding-left:20px;font-size:0.87rem;color:var(--text2);margin-bottom:0;">
+              <li style="margin-bottom:6px;">Introduces the topic with a <strong>general broad opening sentence</strong></li>
+              <li style="margin-bottom:6px;">Answers the question with a <strong>thesis statement</strong></li>
+              <li style="margin-bottom:6px;">Provides a <strong>road map</strong> of your essay</li>
+            </ul>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">2️⃣</span> The Body Paragraphs</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Function</div>
+              <p>The body carries out what the introduction promised. Each paragraph deals with <strong>one key point</strong>, stated in the first sentence, and developed with supporting evidence.</p>
+            </div>
+            <p style="font-size:0.88rem;color:var(--text2);margin-bottom:10px;">Each body paragraph includes:</p>
+            <ul style="padding-left:20px;font-size:0.87rem;color:var(--text2);">
+              <li style="margin-bottom:6px;"><strong>Topic sentence</strong> — states the controlling idea</li>
+              <li style="margin-bottom:6px;"><strong>Supporting sentences</strong> — all relate to the topic sentence and develop the controlling idea</li>
+              <li style="margin-bottom:6px;"><strong>Concluding sentence</strong> — summarizes the idea of the paragraph</li>
+            </ul>
+            <div class="grammar-rule" style="margin-top:12px;">
+              <div class="grammar-rule-label">Tip</div>
+              <p>Use <strong>linking words and phrases</strong> to provide continuity and development between paragraphs.</p>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">3️⃣</span> The Conclusion</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Function</div>
+              <p>The conclusion rounds off the essay appropriately. It <strong>summarizes the content</strong> and draws a conclusion if required.</p>
+            </div>
+            <p style="font-size:0.87rem;color:var(--text2);">It is just as important as the introduction. The final paragraph is the last impression you leave on your assessor — make it count.</p>
+          </div>
+        </div>
+        <div class="summary-box" style="margin-top:20px;">
+          <h5>📌 Body Paragraph Checklist</h5>
+          <ul>
+            <li>✅ One key idea per paragraph</li>
+            <li>✅ Topic sentence at the start</li>
+            <li>✅ Supporting sentences develop the idea</li>
+            <li>✅ Concluding sentence closes the paragraph</li>
+            <li>✅ Use linking words for smooth transitions</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ======================== GRAMMAR ACCURACY ======================== -->
+      <div id="page-grammar-accuracy" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part One</span><span>›</span><span>Grammar & Accuracy</span></div>
+        <div class="lesson-title">Grammar & Accuracy in Essays</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">✍️ Part One — Essay Writing</div>
+          <div class="lesson-meta-item">📄 Lesson 3</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'grammar-accuracy','Grammar & Accuracy')">⭐ Study Later</button>
+        </div>
+        <div class="grammar-rule">
+          <div class="grammar-rule-label">Why accuracy matters</div>
+          <p>Writing essays in a structured and clear way is essential. <strong>Accuracy</strong> means not only clarity of expression, but the correctness of grammar, punctuation, and spelling. Too many errors will affect your grade.</p>
+        </div>
+        <div class="grammar-rule">
+          <div class="grammar-rule-label">Sentence variety</div>
+          <p>Write in complete sentences. <strong>Vary the length and type</strong> of sentences according to your purpose.</p>
+          <div class="example-sentence">Use concise, simple sentences to make emphatic points.</div>
+          <div class="example-sentence">Use longer, complex sentences when you want to expand on a point and analyze in greater detail.</div>
+        </div>
+        <div class="summary-box">
+          <h5>📌 Accuracy Checklist</h5>
+          <ul>
+            <li>✅ Write in complete sentences</li>
+            <li>✅ Vary sentence length — short for emphasis, long for analysis</li>
+            <li>✅ Check grammar: subject-verb agreement, tense consistency</li>
+            <li>✅ Check punctuation: commas, full stops, apostrophes</li>
+            <li>✅ Check spelling carefully</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ======================== READING 1 ======================== -->
+      <div id="page-reading-1" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Two</span><span>›</span><span>Passage 1</span></div>
+        <div class="lesson-title">The Ice Hotel</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">📖 Reading Passage 1</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'reading-1','The Ice Hotel')">⭐ Study Later</button>
+        </div>
+        <div class="passage-card">
+          <div class="passage-header"><h4>📖 Reading Passage</h4></div>
+          <div class="passage-body">
+            <p>Are you into skiing? Is winter your favorite time of year? If you like snow and ice, maybe you should stay at the Ice Hotel in Quebec, Canada. But, you can only check in to this hotel during the winter. Why? Because this hotel is made entirely of ice and snow!</p>
+            <p>This amazing hotel is built every December. It has 32 rooms, and 80 people can stay there each night. The hotel has a movie theater, an art gallery, and a church. Of course, all of these parts of the hotel are made of ice. In fact, all the furniture, art, lights, and even plates and drinking glasses are made of ice.</p>
+            <p>Because this hotel is so unusual, it has become very popular. People from all over the world come to the Ice Hotel to look at the fantastic ice art, drink and eat from designer ice dishes, and experience the unique atmosphere. Some couples have even gotten married in the hotel's ice church.</p>
+            <p>However, all the guests keep their winter coats on! Because of all the ice, the temperature inside the hotel is always between -2 and -5°C. Surprisingly, sleeping is not a problem in the freezing cold hotel rooms. Every guest gets a special cold-weather sleeping bag and some fur blankets. These keep them <span class="vocab-inline" title="comfortable and warm">cozy</span> and warm until morning.</p>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">📝</span> Vocabulary</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="vocab-list">
+              <div class="vocab-item"><div class="vocab-word">cozy</div><div class="vocab-meaning">comfortable and warm</div></div>
+              <div class="vocab-item"><div class="vocab-word">be into</div><div class="vocab-meaning">to enjoy doing something</div></div>
+              <div class="vocab-item"><div class="vocab-word">unique</div><div class="vocab-meaning">one of a kind; unlike anything else</div></div>
+              <div class="vocab-item"><div class="vocab-word">fantastic</div><div class="vocab-meaning">extremely good; wonderful</div></div>
+              <div class="vocab-item"><div class="vocab-word">freezing</div><div class="vocab-meaning">extremely cold</div></div>
+              <div class="vocab-item"><div class="vocab-word">surprisingly</div><div class="vocab-meaning">in a way that causes surprise</div></div>
+              <div class="vocab-item"><div class="vocab-word">atmosphere</div><div class="vocab-meaning">the overall feeling of a place</div></div>
+              <div class="vocab-item"><div class="vocab-word">designer</div><div class="vocab-meaning">made by a famous or skilled designer</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">❓</span> Comprehension Questions</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-r1" class="quiz-container"></div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">📋</span> Summary — Fill in the Blanks</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <p style="font-size:0.82rem;color:var(--text3);margin-bottom:12px;">Word bank: <strong>cozy · fantastic · freezing · surprisingly · unique</strong></p>
+            <div class="fill-blank-container" id="fill-r1">
+              <div class="fill-blank-text">
+                The Ice Hotel is a/an (1) <input class="blank-input" data-ans="unique"> hotel in Canada. It is made of only ice and snow. So, the inside temperature is usually (2) <input class="blank-input" data-ans="freezing"> cold. (3) <input class="blank-input" data-ans="surprisingly">, this hotel is very popular. Many people enjoy looking at the (4) <input class="blank-input" data-ans="fantastic"> art in its gallery and eating from special ice dishes. Guests have a good sleep in the cold hotel rooms under the (5) <input class="blank-input" data-ans="cozy"> fur blankets.
+              </div>
+            </div>
+            <button class="quiz-btn" onclick="checkFillBlanks('fill-r1')">Check Answers</button>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">💬</span> Discussion Questions</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <ul class="discussion-list">
+              <li>Would you like to stay in the Ice Hotel? Why or why not?</li>
+              <li>What is the most unusual place that you have heard of?</li>
+              <li>Have you ever visited an interesting place? What was it like?</li>
+            </ul>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">✍️</span> Writing Task</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="writing-prompt">
+              <div class="writing-prompt-label">✍️ An Interesting Place</div>
+              <p>Write your own short paragraph by answering these questions:</p>
+              <ul>
+                <li>(1) What is an interesting place in your country?</li>
+                <li>(2) Where is it?</li>
+                <li>(3) How or why is it interesting?</li>
+                <li>(4) What can people do there?</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">🔤</span> Vocabulary & Idioms Review</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-r1-vocab" class="quiz-container"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== READING 2 ======================== -->
+      <div id="page-reading-2" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Two</span><span>›</span><span>Passage 2</span></div>
+        <div class="lesson-title">The Importance of Water</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">📖 Reading Passage 2</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'reading-2','The Importance of Water')">⭐ Study Later</button>
+        </div>
+        <div class="passage-card">
+          <div class="passage-header"><h4>📖 Reading Passage</h4></div>
+          <div class="passage-body">
+            <p>Some doctors think that you should drink a glass of water each morning. You should drink this water first thing, before doing anything else. The temperature of the water should be similar to body temperature; neither too hot nor too cold.</p>
+            <p>Why should you drink this water? Water helps your body in many ways. It helps clean out your kidneys. It prepares your stomach for digestion. Water can also help your intestines work better. After drinking water, the intestines can more easily take out nutrients from our food. Water also helps us go to the bathroom more easily.</p>
+            <p>Scientists suggest that people take in 1,600 milliliters of water each day. But don't drink all of that water in one sitting. If you do, your kidneys will have to work much harder to <span class="vocab-inline" title="remove; get rid of">eliminate</span> it. It's better to drink some in the morning and some in the afternoon. Some people think it's better to drink between meals and not during meals. They think water <span class="vocab-inline" title="to make weaker">dilutes</span> the juices produced in our stomachs. This can interfere with normal digestion.</p>
+            <p>Are you drinking enough water every day? Check the color of your urine. If it is light yellow, you are probably drinking enough. If your urine is very dark yellow, you probably need to drink more water. A little more water each day could make you much healthier!</p>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">📝</span> Vocabulary</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="vocab-list">
+              <div class="vocab-item"><div class="vocab-word">eliminate</div><div class="vocab-meaning">remove; get rid of</div></div>
+              <div class="vocab-item"><div class="vocab-word">dilute</div><div class="vocab-meaning">to make weaker (by adding water)</div></div>
+              <div class="vocab-item"><div class="vocab-word">digestion</div><div class="vocab-meaning">the process of breaking down food in the stomach</div></div>
+              <div class="vocab-item"><div class="vocab-word">nutrients</div><div class="vocab-meaning">substances in food that help the body grow and work</div></div>
+              <div class="vocab-item"><div class="vocab-word">in one sitting</div><div class="vocab-meaning">all at once; during one period of time</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">❓</span> Comprehension Questions</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-r2" class="quiz-container"></div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">💬</span> Discussion Questions</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <ul class="discussion-list">
+              <li>Why do you think some people don't drink enough water?</li>
+              <li>Besides drinking it, are there other ways of taking in water?</li>
+              <li>What other things do you drink or eat that are good for your body?</li>
+            </ul>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">✍️</span> Writing Task</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="writing-prompt">
+              <div class="writing-prompt-label">✍️ A Healthy Drink</div>
+              <p>Write your own short paragraph by answering these questions:</p>
+              <ul>
+                <li>(1) What is a healthy thing you drink?</li>
+                <li>(2) How often do you drink this?</li>
+                <li>(3) How much do you usually drink?</li>
+                <li>(4) How is this good for your health?</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== READING 3 ======================== -->
+      <div id="page-reading-3" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Two</span><span>›</span><span>Passage 3</span></div>
+        <div class="lesson-title">Borrowed Words</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">📖 Reading Passage 3</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'reading-3','Borrowed Words')">⭐ Study Later</button>
+        </div>
+        <div class="passage-card">
+          <div class="passage-header"><h4>📖 Reading Passage</h4></div>
+          <div class="passage-body">
+            <p>Do you often use shampoo or put ketchup on your food? Have you ever visited a sauna? If you think these words are originally English, you'd better think again. In fact, each of these words comes from a different language!</p>
+            <p>Shampoo, for example, is actually a word from the Hindi language in India. This word originally meant "massage." In hair shops in India, barbers massage your head while washing your hair. Over time, British people in India used this word to mean a liquid that cleans hair.</p>
+            <p>Almost everyone knows what ketchup is. People all over the world like to pour this tomato sauce on French fries or sandwiches. This word is originally Chinese (from <em>ketsiap</em>, a fish sauce). In the 1600s, British and Dutch sailors brought this fish sauce to Europe. Over time, people changed the sauce by adding tomato flavor to it, but the name basically stayed the same.</p>
+            <p>Sauna, a popular type of public steam room and shower facility, comes from the Finnish language. During one of the European Olympics, athletes from Britain and Germany saw Finnish athletes use saunas after training. Later, the general public all over Europe started using this style of bathing, too. Now, we still use this word to describe all kinds of steam rooms.</p>
+            <p>English is full of many wonderful borrowed words from many languages. Perhaps English should change its name to Eng-hin-chi-fin-fre-ger-ital-span-ish!</p>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">❓</span> Comprehension Questions</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-r3" class="quiz-container"></div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">💬</span> Discussion Questions</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <ul class="discussion-list">
+              <li>If you could learn another language besides English, what would it be?</li>
+              <li>Can you think of any English words that you use in your native language?</li>
+              <li>Do you know of any other borrowed words in English? Are there any words from your language now used in English?</li>
+            </ul>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">✍️</span> Writing Task</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="writing-prompt">
+              <div class="writing-prompt-label">✍️ A Borrowed Word</div>
+              <p>Write your own short paragraph about a borrowed word in English:</p>
+              <ul>
+                <li>(1) What is another borrowed word in English?</li>
+                <li>(2) Where did this word come from?</li>
+                <li>(3) Where do/did speakers of this language live?</li>
+                <li>(4) What does this word mean?</li>
+              </ul>
+              <p style="margin-top:10px;"><strong>Example:</strong> Another borrowed word in English is <em>tomato</em>. This word came from the Aztec Indians. They lived in Central America. This word means the red fruit or vegetable that people like to eat.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== READING 4 ======================== -->
+      <div id="page-reading-4" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Two</span><span>›</span><span>Passage 4</span></div>
+        <div class="lesson-title">The Apple Tree</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">📖 Reading Passage 4</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'reading-4','The Apple Tree')">⭐ Study Later</button>
+        </div>
+        <div class="passage-card">
+          <div class="passage-header"><h4>📖 Reading Passage</h4></div>
+          <div class="passage-body">
+            <p>We had an enormous apple tree in our garden only a few yards from the kitchen window.</p>
+            <p>"We really must cut that tree down," my husband said, soon after we moved into the house. "I'm sure it's dangerous."</p>
+            <p>"Don't be silly," I said. I quite liked the tree myself. "It's quite safe. It isn't going to fall down on the house!"</p>
+            <p>"Well, I read something in the paper only the other day," he said. "A tree crashed into a woman's bedroom during a storm. She was going to get rid of the tree — and now she's in hospital!"</p>
+            <p>In the end, after several arguments of this kind, we asked a couple of workmen to come along and cut the tree down. It was not an easy job. In fact, it took them all morning. But at last the tree was lying on the ground.</p>
+            <p>"What about the roots?" the men asked. "Shall we take them out too or leave them?"</p>
+            <p>"Oh, take them out," I said. "Let's make a good job of it!"</p>
+            <p>This took all afternoon and I was beginning to think about the size of the bill! There was also a big hole in the garden!</p>
+            <p>"You'll be able to put all your old rubbish in there!" the men said as they left.</p>
+            <p>My husband climbed down into the hole and began to look around. "Hey, look!" he called up to me. "There are some old coins here! And I think they're gold!"</p>
+            <p>I climbed down into the hole and we started to dig around, hoping to find some more coins. We did and we also found a small metal box. We broke it open. It was full of jewelry, rings, necklaces, and bracelets!</p>
+            <p>"Gosh!" I said, "I suppose someone hid these things in the ground — perhaps during a war!"</p>
+            <p>"They're probably worth a small fortune!" my husband said. "Well, aren't you glad now that you got rid of that old tree?"</p>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">❓</span> Comprehension Questions — Part A</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-r4" class="quiz-container"></div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">🔍</span> Part B — Reference Questions</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <p style="font-size:0.85rem;color:var(--text3);margin-bottom:12px;">What do the words in italics refer to?</p>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">1. "It's quite safe." — What does <em>it</em> refer to? <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">The apple tree</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">2. "...and now she's in hospital." — Who does <em>she</em> refer to? <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">The woman whose tree crashed into her bedroom</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">3. "Shall we take them out too or leave them?" — What does <em>them</em> refer to? <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">The roots of the tree</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">4. "You'll be able to put all your old rubbish in there." — What does <em>there</em> refer to? <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">The big hole in the garden</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">5. "We did, and we also found a small metal box." — What did <em>we do</em>? <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">They found more coins (in addition to the first ones)</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">6. "It was full of jewelry." — What does <em>it</em> refer to? <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">The small metal box</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">7. "They're probably worth a fortune!" — What does <em>they</em> refer to? <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">The jewelry (rings, necklaces, bracelets, and gold coins)</div>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">💬</span> Discussion Questions</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <ul class="discussion-list">
+              <li>Have you ever found anything valuable? (Where? What was it?)</li>
+              <li>People often find old things in the ground (or in the sea). Do you think they should keep them or give them to a museum?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== READING 5 ======================== -->
+      <div id="page-reading-5" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Two</span><span>›</span><span>Passage 5</span></div>
+        <div class="lesson-title">Seeing Red</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">📖 Reading Passage 5</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'reading-5','Seeing Red')">⭐ Study Later</button>
+        </div>
+        <div class="passage-card">
+          <div class="passage-header"><h4>📖 Reading Passage</h4></div>
+          <div class="passage-body">
+            <p>Bright colors <span class="vocab-inline" title="to produce a strong reaction">stir up</span> active feelings. For example, the color red can cause people to feel excited. In fact, red can even make a person feel hungrier. Yellow can increase energy. Therefore, a room with strong red and yellow colors, would be a good place to eat a lot of food quickly. On the other hand, darker colors, like blue and green, are peaceful. The color blue can help people <span class="vocab-inline" title="to become relaxed">calm down</span>. So, a blue room can be a good place to study, since people can concentrate more easily. However, it is easier to <span class="vocab-inline" title="to fall asleep">nod off</span> in a blue room than in a red one.</p>
+            <p>The colors of clothes can also affect feelings. Black and deep-blue clothes can produce a sense of strength and seriousness. Therefore, a person in a black suit can seem like a leader more easily than one wearing white. If a person is wearing a dark suit and a red tie, he or she may seem both powerful and energetic. Perhaps this is why many politicians and businesspeople wear dark suits with red ties. Brown and green clothes can produce a sense of confidence, which means it may seem easier to trust a person wearing such colors. Therefore, many people choose to wear green or brown clothes for meetings or interviews.</p>
+            <p>Choice of color, for rooms as well as clothes, is not simply about appearance.</p>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">📝</span> Key Vocabulary</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="vocab-list">
+              <div class="vocab-item"><div class="vocab-word">stir up</div><div class="vocab-meaning">to produce a strong reaction or feeling</div></div>
+              <div class="vocab-item"><div class="vocab-word">active</div><div class="vocab-meaning">energetic; busy</div></div>
+              <div class="vocab-item"><div class="vocab-word">calm down</div><div class="vocab-meaning">to become relaxed</div></div>
+              <div class="vocab-item"><div class="vocab-word">nod off</div><div class="vocab-meaning">to fall asleep</div></div>
+              <div class="vocab-item"><div class="vocab-word">deep-blue</div><div class="vocab-meaning">dark blue, almost black</div></div>
+              <div class="vocab-item"><div class="vocab-word">energetic</div><div class="vocab-meaning">full of energy</div></div>
+              <div class="vocab-item"><div class="vocab-word">energy</div><div class="vocab-meaning">power; strength</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">❓</span> Comprehension Questions</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-r5" class="quiz-container"></div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">🎨</span> Color Summary</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <table>
+              <tr><th>Color</th><th>Effect / Feeling</th><th>Best used for</th></tr>
+              <tr><td>🔴 Red</td><td>Excitement, hunger, energy</td><td>Fast food restaurants, gyms</td></tr>
+              <tr><td>🟡 Yellow</td><td>Increased energy</td><td>Energizing spaces</td></tr>
+              <tr><td>🔵 Blue</td><td>Calm, peaceful, sleepy</td><td>Study rooms, bedrooms</td></tr>
+              <tr><td>🟢 Green / Brown</td><td>Confidence, trust</td><td>Job interviews, meetings</td></tr>
+              <tr><td>⚫ Black / Deep-blue</td><td>Strength, seriousness, leadership</td><td>Business suits</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== READING 6 ======================== -->
+      <div id="page-reading-6" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Two</span><span>›</span><span>Passage 6</span></div>
+        <div class="lesson-title">Understanding Dreams</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">📖 Reading Passage 6</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'reading-6','Understanding Dreams')">⭐ Study Later</button>
+        </div>
+        <div class="passage-card">
+          <div class="passage-header"><h4>📖 Reading Passage</h4></div>
+          <div class="passage-body">
+            <p>Did you have any interesting dreams last night?</p>
+            <p>Our dreams come from a part of the brain that contains our thoughts and memories. A person can have up to six dreams a night. Each one usually lasts from 10 to 40 minutes. Everyone dreams, but not everyone remembers their dreams. Most people dream in color, usually with sound. And we usually dream about ourselves and the people we know.</p>
+            <p>Alan Siegel is a scientist who studies dreams. Dreams can tell us a lot about ourselves, he says, "and can help us figure out problems." Another scientist, Robert Stickgold, thinks dreams come from our memories. Stickgold says that dreaming about past events is useful because it helps us learn from them.</p>
+            <p>Here are a few types of dreams and what people think they mean.</p>
+            <p><strong>Dream 1: You Meet Someone While in Your Pajamas.</strong> This dream may be the result of an embarrassing event in your life. Some people think we dream about embarrassing situations if our brains are trying to deal with an event in our own lives.</p>
+            <p><strong>Dream 2: You're Flying.</strong> If you dream about flying, you are probably quite happy. This is a good period in your life. You may feel that other people see you as a leader.</p>
+            <p><strong>Dream 3: You Didn't Study for a Test.</strong> This probably means you are worried about an important future event. If you haven't prepared for it, your dream may be telling you, "It's time to get to work!"</p>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">❓</span> Comprehension Questions</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-r6" class="quiz-container"></div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">🔗</span> Match: Statement → Dream Type</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <p style="font-size:0.82rem;color:var(--text3);margin-bottom:12px;"><strong>a.</strong> Pajama dream &nbsp;&nbsp;<strong>b.</strong> Flying dream &nbsp;&nbsp;<strong>c.</strong> Didn't study for a test</p>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">1. "Everyone at work says that I'm doing a great job." <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">b — Flying dream (happiness, feeling like a leader)</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">2. "The concert is tomorrow, and I haven't had time to practice!" <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">c — Didn't study for a test (worried about a future event)</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">3. "I scored three goals for my soccer team last weekend." <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">b — Flying dream (good period in life, feeling happy)</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">4. "They laughed at me because I had my shirt on backwards." <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">a — Pajama dream (result of an embarrassing situation)</div>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">🗺️</span> Reading Skill: Concept Map</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">What is a Concept Map?</div>
+              <p>A concept map helps you organize information visually. Write the main idea in the center, then link key ideas around it, with smaller details branching out further.</p>
+            </div>
+            <p style="font-size:0.85rem;color:var(--text2);margin-bottom:10px;">Complete the blanks from memory:</p>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 1: Can have 6 dreams a night, each lasts ___? <span>▼ Show</span></button>
+              <div class="answer-reveal">10 to 40 minutes</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 2: Everyone dreams, but not everyone ___? <span>▼ Show</span></button>
+              <div class="answer-reveal">remembers their dreams</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 3: Most dreams are in ___? <span>▼ Show</span></button>
+              <div class="answer-reveal">color</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 4: Why do we dream? <span>▼ Show</span></button>
+              <div class="answer-reveal">To figure out problems (Alan Siegel) / from our memories (Stickgold)</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 5: Dreams can help us ___ problems? <span>▼ Show</span></button>
+              <div class="answer-reveal">figure out</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 6: To help us learn from the ___? <span>▼ Show</span></button>
+              <div class="answer-reveal">past (past events)</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 7: The ___ of dreams? <span>▼ Show</span></button>
+              <div class="answer-reveal">types / meanings</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 8: Meet someone in pajamas = result of a/an ___ situation? <span>▼ Show</span></button>
+              <div class="answer-reveal">embarrassing</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">Blank 9: Didn't study for a test = probably ___ about a future event? <span>▼ Show</span></button>
+              <div class="answer-reveal">worried</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== READING 7 ======================== -->
+      <div id="page-reading-7" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Two</span><span>›</span><span>Passage 7</span></div>
+        <div class="lesson-title">Wonders of Egypt</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">📖 Reading Passage 7</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'reading-7','Wonders of Egypt')">⭐ Study Later</button>
+        </div>
+        <div class="passage-card">
+          <div class="passage-header"><h4>📖 Reading Passage</h4></div>
+          <div class="passage-body">
+            <p>Many people today think of the pyramids of Giza as the defining icon of ancient Egyptian culture. But who actually built them? For years, we did not know for sure. Now, however, archeologists have discovered an ancient city near the pyramids. Close by, there is a cemetery where the pyramid builders were buried. From studying these places, archeologists can now confirm that the pyramids were not built by slaves or foreigners. Ordinary Egyptians built them.</p>
+            <p>It took about 80 years to build the pyramids. Archeologists believe that about 20,000–30,000 people were involved in the construction. The workers had different roles. Some dug up the rock, some moved it, and some shaped it into blocks. People also worked on different teams, each with its own name. Workers often competed to see whose team could do a job faster.</p>
+            <p>Life for these workers was hard. "We can see that in their skeletons," says Azza Mohamed Sarry El-Din, a scientist studying bones found in the cemetery. According to her research, the bones show signs of arthritis. This probably developed from carrying heavy things for a long time. Archeologists have also found many female skeletons in the ancient city and cemetery. The damage to their bones is similar to that of the men. In fact, their lives may have been even tougher: Male workers generally lived to age 40–45, but women to only 30–35. However, workers usually had enough food, and they also received medical care if they got sick or hurt.</p>
+            <p>The task was challenging, but laborers were proud of their work. On a wall in Khufu's Great Pyramid, for example, a group of workers wrote <em>Friends of Khufu</em>. "It's because they were not just building the tomb of their king," says Egyptian archeologist Zahi Hawass. "They were building Egypt. It was a national project, and everyone was a participant."</p>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">❓</span> Comprehension Questions — Part A</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-r7" class="quiz-container"></div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">✅</span> Part B — True / False / Not Given</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">1. It took more than a hundred years to complete the pyramids. <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">FALSE — It took about 80 years.</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">2. The rocks were shaped into blocks mostly by women. <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">NOT GIVEN — The passage does not specify who shaped the blocks.</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">3. The pyramid builders worked in teams. <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">TRUE — Workers worked in teams, each with its own name.</div>
+            </div>
+            <div class="answer-block">
+              <button class="answer-toggle" onclick="toggleAnswer(this)">4. Male workers generally lived longer than female workers. <span>▼ Show Answer</span></button>
+              <div class="answer-reveal">TRUE — Male workers lived to 40–45, but women lived to only 30–35.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== READING 8 ======================== -->
+      <div id="page-reading-8" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Two</span><span>›</span><span>Passage 8</span></div>
+        <div class="lesson-title">The Solar System</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">📖 Reading Passage 8</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'reading-8','The Solar System')">⭐ Study Later</button>
+        </div>
+        <div class="passage-card">
+          <div class="passage-header"><h4>📖 Reading Passage</h4></div>
+          <div class="passage-body">
+            <p>The Solar System consists of the Sun and the objects that orbit it, including planets, moons, asteroids, and comets. The Sun is the center of the Solar System, and its gravitational pull keeps everything in orbit. The eight planets in the Solar System can be divided into two categories: the inner planets and the outer planets. The inner planets — Mercury, Venus, Earth, and Mars — are rocky and smaller in size compared to the outer planets. The outer planets — Jupiter, Saturn, Uranus, and Neptune — are significantly larger and made mostly of gas and ice. The gas giants, Jupiter and Saturn, are known for their massive sizes and distinctive rings. Uranus and Neptune are often called ice giants because they contain more water, ammonia, and methane.</p>
+            <p>The Solar System also includes dwarf planets, such as Pluto, which was once considered the ninth planet but is now classified as a dwarf planet by astronomers. Moons, which are natural satellites that orbit planets, are also a crucial part of the Solar System. Earth's moon has been a focal point for scientific research and space exploration. Other notable moons include Jupiter's Ganymede, the largest moon in the Solar System, and Saturn's Titan, which is known for its thick atmosphere and the possibility of liquid methane lakes.</p>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">❓</span> Comprehension Questions (1–10)</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-r8" class="quiz-container"></div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">🪐</span> Quick Reference</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <table>
+              <tr><th>Category</th><th>Planets / Objects</th><th>Key Feature</th></tr>
+              <tr><td>Inner Planets</td><td>Mercury, Venus, Earth, Mars</td><td>Rocky, smaller</td></tr>
+              <tr><td>Outer Planets</td><td>Jupiter, Saturn, Uranus, Neptune</td><td>Gas/ice, larger</td></tr>
+              <tr><td>Gas Giants</td><td>Jupiter, Saturn</td><td>Massive, distinctive rings</td></tr>
+              <tr><td>Ice Giants</td><td>Uranus, Neptune</td><td>Water, ammonia, methane</td></tr>
+              <tr><td>Dwarf Planets</td><td>Pluto</td><td>Reclassified from planet</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== READING 9 ======================== -->
+      <div id="page-reading-9" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Two</span><span>›</span><span>Passage 9</span></div>
+        <div class="lesson-title">The Importance of Exercise</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">📖 Reading Passage 9</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'reading-9','The Importance of Exercise')">⭐ Study Later</button>
+        </div>
+        <div class="passage-card">
+          <div class="passage-header"><h4>📖 Reading Passage</h4></div>
+          <div class="passage-body">
+            <p>Exercise is a vital part of maintaining a healthy lifestyle. Not only does it help you stay physically fit, but it also has significant mental health benefits. Engaging in regular physical activity helps to maintain a healthy weight by burning calories and building muscle. It improves heart health by strengthening the cardiovascular system, reducing the risk of heart disease, and increasing overall stamina.</p>
+            <p>Regular exercise is also known to boost mood and energy levels by releasing endorphins, the body's natural mood enhancers. Additionally, physical activity reduces the risk of chronic diseases such as diabetes, obesity, and certain types of cancer. It can also improve sleep quality, reduce stress, and increase mental clarity.</p>
+            <p>Exercise can take many forms, from brisk walking, running, and cycling, to swimming and dancing. It is important to choose activities that you enjoy to ensure you stay motivated. Health experts recommend at least 30 minutes of moderate-intensity exercise every day, although any movement is better than none. You can also break it up into smaller sessions throughout the day if needed.</p>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">❓</span> Comprehension Questions (1–10)</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-r9" class="quiz-container"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== READING 10 ======================== -->
+      <div id="page-reading-10" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Two</span><span>›</span><span>Passage 10</span></div>
+        <div class="lesson-title">History of the Internet</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">📖 Reading Passage 10</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'reading-10','History of the Internet')">⭐ Study Later</button>
+        </div>
+        <div class="passage-card">
+          <div class="passage-header"><h4>📖 Reading Passage</h4></div>
+          <div class="passage-body">
+            <p>The history of the Internet dates back to the 1960s when it was developed as a research project by the United States Department of Defense. The project, known as ARPANET (Advanced Research Projects Agency Network), aimed to connect universities and research institutions across the country and allow for easy sharing of information. Initially, ARPANET was used by scientists and military personnel for research purposes, but its potential for broader use quickly became apparent. By the 1980s, ARPANET had evolved into a more accessible network, and the development of new protocols allowed different types of computers to communicate.</p>
+            <p>The invention of the World Wide Web (WWW) by Tim Berners-Lee in 1991 revolutionized the way people accessed and shared information. The introduction of web browsers, such as Mosaic and Netscape, made the Internet easier to navigate, and by the mid-1990s, it became widely available to the public. The growth of the Internet brought about significant changes in communication, education, and business. Email, social media, and online shopping emerged as new ways to connect and conduct business. Today, the Internet is an essential part of everyday life, connecting billions of people around the world and enabling everything from social interaction to business transactions.</p>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">❓</span> Comprehension Questions (1–10)</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-r10" class="quiz-container"></div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">📅</span> Internet Timeline</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <table>
+              <tr><th>Decade / Year</th><th>Key Event</th></tr>
+              <tr><td>1960s</td><td>ARPANET developed by the US Dept. of Defense</td></tr>
+              <tr><td>1980s</td><td>ARPANET evolves; new protocols allow different computers to connect</td></tr>
+              <tr><td>1991</td><td>Tim Berners-Lee invents the World Wide Web (WWW)</td></tr>
+              <tr><td>Mid-1990s</td><td>Browsers (Mosaic, Netscape) make the Internet public and easy to navigate</td></tr>
+              <tr><td>Today</td><td>Email, social media, e-commerce — billions connected worldwide</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================== GRAMMAR: PARTS OF SPEECH ======================== -->
+      <div id="page-grammar-pos" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Three</span><span>›</span><span>Parts of Speech</span></div>
+        <div class="lesson-title">Parts of Speech</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">🔤 Grammar · Unit 1</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'grammar-pos','Parts of Speech')">⭐ Study Later</button>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header open" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">1️⃣</span> Nouns</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body open">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Definition</div>
+              <p>A noun is a word that represents a <strong>person, place, thing, or idea</strong>.</p>
+            </div>
+            <div class="vocab-list">
+              <div class="vocab-item"><div class="vocab-word">Person</div><div class="vocab-meaning">teacher, student, doctor</div></div>
+              <div class="vocab-item"><div class="vocab-word">Place</div><div class="vocab-meaning">park, school, city</div></div>
+              <div class="vocab-item"><div class="vocab-word">Thing</div><div class="vocab-meaning">book, car, phone</div></div>
+              <div class="vocab-item"><div class="vocab-word">Idea</div><div class="vocab-meaning">love, freedom, courage</div></div>
+            </div>
+            <div class="grammar-rule" style="margin-top:14px;">
+              <div class="grammar-rule-label">Types of Nouns</div>
+              <p><strong>Proper Nouns:</strong> Specific names — Paris, John, Monday</p>
+              <p><strong>Common Nouns:</strong> General names — city, boy, week</p>
+              <p><strong>Countable Nouns:</strong> Can be counted — two books, three apples</p>
+              <p><strong>Uncountable Nouns:</strong> Cannot be counted — water, rice, music</p>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">2️⃣</span> Verbs</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Definition</div>
+              <p>A verb is a word that expresses <strong>action or state of being</strong>.</p>
+            </div>
+            <div class="example-sentence">Action Verbs: run, write, jump</div>
+            <div class="example-sentence">State Verbs: be, seem, appear</div>
+            <div class="grammar-rule" style="margin-top:12px;">
+              <div class="grammar-rule-label">Types of Verbs</div>
+              <p><strong>Regular Verbs:</strong> Follow a standard pattern — walk → walked → walked</p>
+              <p><strong>Irregular Verbs:</strong> Do not follow a standard pattern — go → went → gone</p>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">3️⃣</span> Adjectives</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Definition</div>
+              <p>An adjective is a word that <strong>describes or modifies a noun</strong>.</p>
+            </div>
+            <div class="example-sentence">Descriptive: beautiful, tall, interesting</div>
+            <div class="example-sentence">Quantitative: few, many, several</div>
+            <div class="example-sentence">Possessive: my, your, their</div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">4️⃣</span> Adverbs</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Definition</div>
+              <p>An adverb <strong>modifies a verb, adjective, or another adverb</strong>. It often ends in "-ly".</p>
+            </div>
+            <div class="example-sentence">Manner: quickly, slowly, carefully</div>
+            <div class="example-sentence">Time: yesterday, now, soon</div>
+            <div class="example-sentence">Place: here, there, everywhere</div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">5️⃣</span> Pronouns</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Definition</div>
+              <p>A pronoun is a word used to <strong>replace a noun</strong>.</p>
+            </div>
+            <div class="example-sentence">Personal: he, she, it, they</div>
+            <div class="example-sentence">Possessive: his, hers, ours</div>
+            <div class="example-sentence">Reflexive: myself, yourself, themselves</div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">🧪</span> Quiz: Parts of Speech</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-pos" class="quiz-container"></div>
+          </div>
+        </div>
+        <div class="summary-box" style="margin-top:20px;">
+          <h5>📌 Quick Summary</h5>
+          <ul>
+            <li><strong>Noun</strong> — person, place, thing, idea</li>
+            <li><strong>Verb</strong> — action or state (regular / irregular)</li>
+            <li><strong>Adjective</strong> — describes a noun</li>
+            <li><strong>Adverb</strong> — modifies verb/adjective/adverb; often ends in -ly</li>
+            <li><strong>Pronoun</strong> — replaces a noun (personal, possessive, reflexive)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ======================== GRAMMAR: SENTENCE STRUCTURE ======================== -->
+      <div id="page-grammar-sentence" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Three</span><span>›</span><span>Sentence Structure</span></div>
+        <div class="lesson-title">Sentence Structure</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">🔤 Grammar · Unit 2</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'grammar-sentence','Sentence Structure')">⭐ Study Later</button>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header open" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">1️⃣</span> Simple Sentence</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body open">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Definition</div>
+              <p>A simple sentence has a <strong>subject and a predicate (verb)</strong>, expressing a complete thought.</p>
+            </div>
+            <div class="example-sentence">"The cat sleeps."</div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">2️⃣</span> Compound Sentence</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Definition</div>
+              <p>Two <strong>independent clauses</strong> joined by a coordinating conjunction (and, but, or).</p>
+            </div>
+            <div class="example-sentence">"I went to the store, and I bought some milk."</div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">3️⃣</span> Complex Sentence</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Definition</div>
+              <p>One <strong>independent clause</strong> + at least one <strong>dependent clause</strong>, joined by a subordinating conjunction (because, although, if).</p>
+            </div>
+            <div class="example-sentence">"I went to the store because I needed milk."</div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">4️⃣</span> Compound-Complex Sentence</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Definition</div>
+              <p>At least <strong>two independent clauses</strong> + one or more <strong>dependent clauses</strong>.</p>
+            </div>
+            <div class="example-sentence">"I went to the store because I needed milk, and I bought eggs."</div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">🧪</span> Quiz: Sentence Structure</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-sentence" class="quiz-container"></div>
+          </div>
+        </div>
+        <div class="summary-box" style="margin-top:20px;">
+          <h5>📌 Quick Reference</h5>
+          <ul>
+            <li><strong>Simple:</strong> Subject + Predicate (one complete thought)</li>
+            <li><strong>Compound:</strong> Independent clause + conjunction + independent clause</li>
+            <li><strong>Complex:</strong> Independent clause + subordinating conjunction + dependent clause</li>
+            <li><strong>Compound-Complex:</strong> 2+ independent clauses + 1+ dependent clauses</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ======================== GRAMMAR: TENSES ======================== -->
+      <div id="page-grammar-tenses" class="lesson-view">
+        <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>›</span><span>Part Three</span><span>›</span><span>Tenses</span></div>
+        <div class="lesson-title">Tenses: Present Simple & Past Simple</div>
+        <div class="lesson-meta">
+          <div class="lesson-meta-item">🔤 Grammar · Unit 3</div>
+          <button class="bookmark-btn" onclick="toggleBookmark(this,'grammar-tenses','Tenses')">⭐ Study Later</button>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header open" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">1️⃣</span> Present Simple Tense</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body open">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Uses</div>
+              <p><strong>1. Habits and routines</strong></p>
+              <div class="example-sentence">"I drink coffee every morning."</div>
+              <p><strong>2. General truths or facts</strong></p>
+              <div class="example-sentence">"The Earth revolves around the Sun."</div>
+              <p><strong>3. Permanent situations</strong></p>
+              <div class="example-sentence">"She lives in New York."</div>
+              <p><strong>4. Scheduled events</strong></p>
+              <div class="example-sentence">"The train leaves at 6 p.m."</div>
+              <p><strong>5. State verbs</strong> (be, know, love, belong)</p>
+              <div class="example-sentence">"I love chocolate."</div>
+            </div>
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Form</div>
+              <p><strong>Affirmative:</strong> Subject + base verb (add -s/-es for he/she/it)</p>
+              <div class="example-sentence">"She writes every day."</div>
+              <p><strong>Negative:</strong> Subject + do/does + not + base verb</p>
+              <div class="example-sentence">"They don't like broccoli." / "He doesn't play soccer."</div>
+              <p><strong>Question:</strong> Do/Does + subject + base verb?</p>
+              <div class="example-sentence">"Do you like pizza?" / "Does she live here?"</div>
+            </div>
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Common Spelling Changes (3rd person singular)</div>
+              <p>Verbs ending in <strong>-sh, -ch, -x, -s, -z</strong> → add <strong>-es</strong></p>
+              <div class="example-sentence">"She watches TV." / "He fixes the car."</div>
+              <p>Consonant + <strong>y</strong> → change y to <strong>i</strong>, add <strong>-es</strong></p>
+              <div class="example-sentence">"She tries hard."</div>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">2️⃣</span> Past Simple Tense</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Uses</div>
+              <p><strong>1. Completed actions</strong></p>
+              <div class="example-sentence">"I visited Paris last year."</div>
+              <p><strong>2. Sequential actions in the past</strong></p>
+              <div class="example-sentence">"He came home, ate dinner, and went to bed."</div>
+              <p><strong>3. States in the past</strong></p>
+              <div class="example-sentence">"She lived in New York for five years."</div>
+            </div>
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Form</div>
+              <p><strong>Affirmative:</strong> Subject + past form (regular: add -ed; irregular: varies)</p>
+              <div class="example-sentence">"I walked to the store." / "She went to the market."</div>
+              <p><strong>Negative:</strong> Subject + did + not + base verb</p>
+              <div class="example-sentence">"They didn't arrive on time."</div>
+              <p><strong>Question:</strong> Did + subject + base verb?</p>
+              <div class="example-sentence">"Did you eat dinner?" / "Did she see the movie?"</div>
+            </div>
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Spelling Rules for Regular Verbs (-ed)</div>
+              <p>Add <strong>-ed</strong> to base form: "He played football."</p>
+              <p>Verbs ending in <strong>-e</strong> → add <strong>-d</strong>: "She baked a cake."</p>
+              <p>Consonant + <strong>y</strong> → change y to <strong>i</strong>, add <strong>-ed</strong>: "He studied."</p>
+            </div>
+            <div class="grammar-rule">
+              <div class="grammar-rule-label">Common Irregular Verbs</div>
+              <p><strong>go</strong> → went &nbsp;&nbsp; <strong>buy</strong> → bought &nbsp;&nbsp; <strong>have</strong> → had &nbsp;&nbsp; <strong>eat</strong> → ate</p>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible(this)">
+            <div class="collapsible-title"><span class="sec-icon">🧪</span> Quiz: Present Simple & Past Simple (16 Questions)</div>
+            <div class="collapsible-arrow">▼</div>
+          </div>
+          <div class="collapsible-body">
+            <div id="quiz-tenses" class="quiz-container"></div>
+          </div>
+        </div>
+        <div class="summary-box" style="margin-top:20px;">
+          <h5>📌 Quick Summary</h5>
+          <ul>
+            <li><strong>Present Simple</strong>: habits, facts, permanent states, schedules, state verbs</li>
+            <li><strong>Past Simple</strong>: completed past actions, sequences, past states</li>
+            <li>Negative present: <em>do/does + not + base verb</em></li>
+            <li>Negative past: <em>did + not + base verb</em></li>
+            <li>Questions present: <em>Do/Does + subject + base verb?</em></li>
+            <li>Questions past: <em>Did + subject + base verb?</em></li>
+          </ul>
+        </div>
+      </div>
+
+    </div><!-- end content-area -->
+  </div><!-- end main-content -->
+</div><!-- end app-wrapper -->
+
+<script>
+/* ============================================================
+   QUIZ DATA
+   ============================================================ */
+const QUIZZES = {
+  'quiz-r1': [
+    { q: "1. What is the main idea of this reading?", opts: ["How the Ice Hotel is built","What makes the Ice Hotel special","Why the Ice Hotel is made of ice","The services of the Ice Hotel"], ans: 1 },
+    { q: "2. What can you do in the hotel?", opts: ["Watch a movie","Get married","Eat an interesting meal","All of the above"], ans: 3 },
+    { q: "3. Why is sleeping NOT a problem at the hotel?", opts: ["The rooms are warm.","The temperature is -2°C.","The sleeping bags are warm.","The furniture is warm."], ans: 2 },
+    { q: "4. In which part of the hotel would you probably find the ice plates?", opts: ["The church","The restaurant","The rooms","The art gallery"], ans: 1 },
+    { q: "5. What do you think happens to this hotel in the spring?", opts: ["It freezes.","It melts.","It stays open.","It moves."], ans: 1 }
+  ],
+  'quiz-r1-vocab': [
+    { q: "1. He ______ J.K. Rowling. He has every book she has written.", opts: ["hates","is into","checks in","experiences"], ans: 1 },
+    { q: "2. It's so cold outside that the water has turned to ______.", opts: ["freezing","ice","cold","temperature"], ans: 1 },
+    { q: "3. Picasso painted ______ pictures.", opts: ["designer","cozy","warm","unique"], ans: 3 },
+    { q: "4. Many people enjoy the ______ in that restaurant.", opts: ["atmosphere","ice","world","drinking glasses"], ans: 0 },
+    { q: "5. I really like The Matrix. It is a ______ movie.", opts: ["drinking","fantastic","freezing","warm"], ans: 1 },
+    { q: "6. That house is ______ wood.", opts: ["made of","built by","looked like","gotten to"], ans: 0 },
+    { q: "7. In very cold countries, people sometimes wear ______ coats.", opts: ["experience","inside","sleeping bag","fur"], ans: 3 },
+    { q: "8. I gave her some flowers. She was ______.", opts: ["surprising","surprised","surprisingly"], ans: 1 },
+    { q: "9. "It is so cold today." "Yes, it's ______!"", opts: ["frozen","freeze","freezing"], ans: 2 },
+    { q: "10. It is ______ for me to go dancing. Actually, I don't dance well.", opts: ["usual","unusual","usually"], ans: 1 }
+  ],
+  'quiz-r2': [
+    { q: "1. What could be another title for this reading?", opts: ["'Drink Water, Not Soft Drinks'","'Drink During Meals'","'Drink Between Meals'","'Drink Enough Water'"], ans: 3 },
+    { q: "2. Why is it helpful to drink water in the morning?", opts: ["Your kidneys will work harder.","Your intestines will work well.","Your juices will be diluted.","Your urine will be pale yellow."], ans: 1 },
+    { q: "3. Which of the following is NOT a reason to drink water?", opts: ["So your intestines will work well","To get more nutrients","To clean out your kidneys","To dilute your stomach juices"], ans: 3 },
+    { q: "4. Why is it better to drink between meals?", opts: ["So you eat enough food","So you don't dilute stomach juices","So your urine will not smell bad","So you don't overwork your kidneys"], ans: 1 },
+    { q: "5. Why is dark-colored urine a sign to drink more water?", opts: ["It shows our body is healthy.","It means our kidneys are working too hard.","Less water makes the color darker.","It is the same color as our digestive juices."], ans: 2 }
+  ],
+  'quiz-r3': [
+    { q: "1. What is the main idea of this reading?", opts: ["English words in other languages","Words from India","Usage of words from other languages in English","The most popular borrowed words"], ans: 2 },
+    { q: "2. Which of the following words is from Hindi?", opts: ["Shampoo","Sauna","Ketchup","Massage"], ans: 0 },
+    { q: "3. What did the original word for ketchup mean?", opts: ["A red tomato sauce","A hair shop","Fish","A kind of fish sauce"], ans: 3 },
+    { q: "4. Why did people start to use the word 'sauna'?", opts: ["Athletes made it popular at home.","The public liked the Olympics.","The Finnish traveled a lot.","It was good after training."], ans: 0 },
+    { q: "5. What does 'ital' probably mean in 'Eng-hin-chi-fin-fre-ger-ital-span-ish'?", opts: ["The name of a country","The name of a language","The name of a group of people","The name of people who speak English"], ans: 1 }
+  ],
+  'quiz-r4': [
+    { q: "1. The man wanted to get rid of the apple tree because it was…", opts: ["too near the house","too old","too big"], ans: 0 },
+    { q: "2. The man's wife liked the tree but in the end she…", opts: ["went to hospital","agreed","helped to cut the tree down"], ans: 1 },
+    { q: "3. The men who came to cut the tree down…", opts: ["had to work hard","argued a lot","worked during a storm"], ans: 0 },
+    { q: "4. The workmen made a big hole because…", opts: ["they were looking for money","they wanted to hide some rubbish","they took out the roots of the tree"], ans: 2 },
+    { q: "5. When the man climbed down into the hole, he found…", opts: ["some money","some rubbish","some apples"], ans: 0 },
+    { q: "6. Later, the man and his wife found a box. The things in the box were…", opts: ["valuable","important","useful"], ans: 0 }
+  ],
+  'quiz-r5': [
+    { q: "1. What is the main idea of this reading?", opts: ["Colors are important.","Managers should wear black.","Colors can affect feelings.","People do not see colors well."], ans: 2 },
+    { q: "2. Where would red and yellow be most useful?", opts: ["In an office","In a health club","In a department store","In a fast food restaurant"], ans: 3 },
+    { q: "3. According to the reading, what would be the best color for a bedroom?", opts: ["Blue","Yellow","Grey","Brown"], ans: 0 },
+    { q: "4. According to the reading, green clothes would be most useful for which person?", opts: ["A professor","Someone looking for a job","A manager of a large department","A doctor"], ans: 1 },
+    { q: "5. Why would a president wear a black suit?", opts: ["To seem powerful","To scare people","To make people feel relaxed","To look better in pictures"], ans: 0 }
+  ],
+  'quiz-r6': [
+    { q: "1. What is the main idea of the reading?", opts: ["Dreams mainly come from one part of the brain.","Everyone has dreams, but not everyone remembers them.","We can learn a lot from the types of dreams we have."], ans: 2 },
+    { q: "2. Which of these sentences about dreams is NOT true?", opts: ["Dreams usually include sounds.","Dreams are usually between 10 and 40 minutes long.","Most people's dreams are in black and white."], ans: 2 },
+    { q: "3. In paragraph 2, what does 'figure out' mean?", opts: ["understand","remember","experience"], ans: 0 },
+    { q: "4. Robert Stickgold believes that dreams…", opts: ["can tell us about our future","happen more often when we're unhappy","are made from our memories"], ans: 2 },
+    { q: "5. According to the passage, which of these sentences is true?", opts: ["If you dream you're wearing pajamas, something embarrassing probably happened to you.","If you dream you're flying, this is probably a difficult time in your life.","If you dream you didn't study for a test, you're probably not getting enough sleep at night."], ans: 0 }
+  ],
+  'quiz-r7': [
+    { q: "1. The main purpose of this reading is to describe…", opts: ["who the pyramid builders were and what they did","what makes the pyramids of Giza special","why Egyptian kings wanted to build pyramids"], ans: 0 },
+    { q: "2. What is the third paragraph mainly about?", opts: ["information on the lives of pyramid builders","the benefits of being a male worker","the roles of men and women in ancient Egyptian society"], ans: 0 },
+    { q: "3. Who does 'their' refer to in paragraph 3, line 6 ('In fact, their lives may…')?", opts: ["archeologists","male workers","female workers"], ans: 2 },
+    { q: "4. In paragraph 4, what does the word 'laborers' mean?", opts: ["kings","workers","women"], ans: 1 },
+    { q: "5. What can we infer about the people who wrote 'Friends of Khufu' on a wall?", opts: ["They were looking for new friends.","They were pleased with their work.","They got into trouble for writing on the wall."], ans: 1 }
+  ],
+  'quiz-r8': [
+    { q: "1. What is the center of the Solar System?", opts: ["Earth","The Moon","The Sun","Pluto"], ans: 2 },
+    { q: "2. Which of the following is NOT an inner planet?", opts: ["Mercury","Venus","Mars","Neptune"], ans: 3 },
+    { q: "3. What is the primary composition of the outer planets?", opts: ["Rocks and metals","Gas and ice","Dust and water","Water and rocks"], ans: 1 },
+    { q: "4. What is Pluto classified as today?", opts: ["A moon","A dwarf planet","An asteroid","A gas giant"], ans: 1 },
+    { q: "5. What distinguishes gas giants from ice giants?", opts: ["Gas giants have more water","Ice giants are smaller","Gas giants are larger and mostly composed of hydrogen and helium, while ice giants have more water and methane","Ice giants have no moons"], ans: 2 },
+    { q: "6. Which of the following is the largest moon in the Solar System?", opts: ["Titan","Ganymede","The Moon","Callisto"], ans: 1 },
+    { q: "7. What is the primary role of the Sun in the Solar System?", opts: ["To create planets","To provide light and heat","To create moons","To affect tides"], ans: 1 },
+    { q: "8. Which planet has the most moons?", opts: ["Mars","Saturn","Earth","Neptune"], ans: 1 },
+    { q: "9. What is unique about Titan, Saturn's moon?", opts: ["It has a water-based atmosphere","It has liquid methane lakes","It is smaller than Earth's moon","It has no atmosphere"], ans: 1 },
+    { q: "10. True or False: Earth is the only planet with a natural satellite.", opts: ["True","False"], ans: 1 }
+  ],
+  'quiz-r9': [
+    { q: "1. What is one of the mental health benefits of exercise?", opts: ["Increases anxiety","Boosts mood","Causes depression","Reduces sleep quality"], ans: 1 },
+    { q: "2. How does exercise help with heart health?", opts: ["By increasing blood pressure","By strengthening the cardiovascular system","By causing heart disease","By slowing down heart rate"], ans: 1 },
+    { q: "3. Which of the following is NOT a chronic disease reduced by exercise?", opts: ["Diabetes","Obesity","Cancer","Asthma"], ans: 3 },
+    { q: "4. What do endorphins do during exercise?", opts: ["Cause fatigue","Enhance mood","Increase muscle pain","Cause weight gain"], ans: 1 },
+    { q: "5. Which of the following activities is suggested for exercise?", opts: ["Watching TV","Reading a book","Running or swimming","Sleeping"], ans: 2 },
+    { q: "6. How many minutes of exercise does the article recommend per day?", opts: ["10 minutes","30 minutes","60 minutes","90 minutes"], ans: 1 },
+    { q: "7. What can regular exercise improve apart from physical health?", opts: ["Mood and energy levels","Short-term memory loss","Chronic fatigue","Financial stability"], ans: 0 },
+    { q: "8. What is one way to make exercise more enjoyable?", opts: ["By working out alone every time","By choosing activities you enjoy","By exercising indoors only","By avoiding any rest days"], ans: 1 },
+    { q: "9. Why is sleep quality improved by exercise?", opts: ["Exercise increases sleep disturbances","Exercise releases stress hormones","Exercise relaxes the body and reduces anxiety","Exercise increases caffeine intake"], ans: 2 },
+    { q: "10. True or False: You must exercise for one full hour every day to see benefits.", opts: ["True","False"], ans: 1 }
+  ],
+  'quiz-r10': [
+    { q: "1. What was ARPANET originally developed for?", opts: ["Communication between countries","Entertainment","Connecting research institutions and universities","Online shopping"], ans: 2 },
+    { q: "2. Who developed the World Wide Web?", opts: ["Mark Zuckerberg","Tim Berners-Lee","Steve Jobs","Bill Gates"], ans: 1 },
+    { q: "3. When did the World Wide Web get invented?", opts: ["1970s","1980s","1991","2000s"], ans: 2 },
+    { q: "4. What did the development of ARPANET lead to?", opts: ["The creation of email","A faster way to conduct research","The invention of the computer","The invention of the Web browser"], ans: 1 },
+    { q: "5. How did web browsers like Mosaic and Netscape contribute to the growth of the Internet?", opts: ["By allowing users to create websites","By making the Internet easier to navigate","By providing free access to websites","By limiting the use of the Internet"], ans: 1 },
+    { q: "6. What was one of the significant impacts of the Internet on communication?", opts: ["Reduced the speed of communication","Allowed for real-time communication through email and social media","Increased the cost of communication","Limited communication to specific regions"], ans: 1 },
+    { q: "7. What role does the Internet play in modern business?", opts: ["It is only used for entertainment","It allows for online shopping and business transactions","It has no impact on business","It slows down business operations"], ans: 1 },
+    { q: "8. Which of the following is a new way of connecting people brought by the Internet?", opts: ["Television broadcasts","Radio","Social media","Telephone calls"], ans: 2 },
+    { q: "9. How did the Internet change education?", opts: ["It made education more expensive","It provided easier access to information and online learning","It replaced teachers with computers","It limited access to knowledge"], ans: 1 },
+    { q: "10. True or False: The Internet was accessible to the general public before the 1990s.", opts: ["True","False"], ans: 1 }
+  ],
+  'quiz-pos': [
+    { q: "1.1 \"She is a very quick runner.\" — The word 'quick' is a:", opts: ["Noun","Verb","Adjective","Adverb"], ans: 2 },
+    { q: "1.2 Identify the noun in: \"John went to the park to play basketball.\"", opts: ["John","went","park","play"], ans: 0 },
+    { q: "1.3 Fill in the blank: \"Mary is my friend. ___ is very kind.\"", opts: ["He","She","It","They"], ans: 1 }
+  ],
+  'quiz-sentence': [
+    { q: "2.1 Identify the type of sentence: \"She studied for the exam, but she still didn't pass.\"", opts: ["Simple","Compound","Complex","Compound-Complex"], ans: 1 },
+    { q: "2.2 Choose the correct conjunction: \"I wanted to go to the movies, ___ I had too much homework.\"", opts: ["and","but","because","if"], ans: 1 }
+  ],
+  'quiz-tenses': [
+    { q: "1. Which sentence is in the present simple tense?", opts: ["I am writing a letter.","She goes to school every day.","He was reading a book."], ans: 1 },
+    { q: "2. Which sentence is in the past simple tense?", opts: ["I visit my grandmother every Sunday.","She studied for the test last night.","They are traveling to Japan next week."], ans: 1 },
+    { q: "3. Which of the following is the correct negative form of \"She plays tennis\"?", opts: ["She play tennis.","She does not play tennis.","She didn't play tennis."], ans: 1 },
+    { q: "4. Which sentence is in the present simple tense?", opts: ["I ate breakfast this morning.","She runs every morning.","They are sleeping right now."], ans: 1 },
+    { q: "5. Which of the following sentences is in the past simple tense?", opts: ["He reads books regularly.","I saw a movie last night.","She does her homework every evening."], ans: 1 },
+    { q: "6. What is the correct question form for \"She eats lunch at 12 PM\"?", opts: ["Does she eat lunch at 12 PM?","Do she eat lunch at 12 PM?","Is she eat lunch at 12 PM?"], ans: 0 },
+    { q: "7. Which of the following sentences is grammatically correct in the past simple?", opts: ["He gone to the store.","He goes to the store yesterday.","He went to the store yesterday."], ans: 2 },
+    { q: "8. Choose the correct past simple form of the verb \"go\".", opts: ["Goed","Went","Going"], ans: 1 },
+    { q: "9. Which sentence is correct in the present simple tense?", opts: ["I don't goes to work on Sundays.","I don't go to work on Sundays.","I don't going to work on Sundays."], ans: 1 },
+    { q: "10. Choose the correct negative form of \"They study English every day.\"", opts: ["They doesn't study English every day.","They do not study English every day.","They didn't study English every day."], ans: 1 },
+    { q: "11. What is the past simple form of \"buy\"?", opts: ["Buys","Bought","Buying"], ans: 1 },
+    { q: "12. Which sentence is correct in the past simple tense?", opts: ["I doesn't play soccer yesterday.","I didn't play soccer yesterday.","I don't play soccer yesterday."], ans: 1 },
+    { q: "13. What is the correct question form of \"They arrived early\"?", opts: ["Did they arrive early?","Do they arrived early?","Did they arrives early?"], ans: 0 },
+    { q: "14. Which sentence is in the present simple tense?", opts: ["I played tennis yesterday.","She eats an apple every morning.","They were watching a movie."], ans: 1 },
+    { q: "15. What is the correct negative form of \"She studies hard\"?", opts: ["She do not studies hard.","She do not study hard.","She does not study hard."], ans: 2 },
+    { q: "16. Which sentence uses the correct past simple form of \"have\"?", opts: ["She haved a good time last weekend.","She has a good time last weekend.","She had a good time last weekend."], ans: 2 }
+  ]
+};
+
+/* ============================================================
+   SEARCH INDEX
+   ============================================================ */
+const SEARCH_INDEX = [
+  { label: 'Introduction to Writing', page: 'essay-intro', cat: 'Writing' },
+  { label: 'Essay Structure', page: 'essay-structure', cat: 'Writing' },
+  { label: 'Grammar & Accuracy', page: 'grammar-accuracy', cat: 'Writing' },
+  { label: 'The Ice Hotel', page: 'reading-1', cat: 'Reading' },
+  { label: 'Importance of Water', page: 'reading-2', cat: 'Reading' },
+  { label: 'Borrowed Words (shampoo, ketchup, sauna)', page: 'reading-3', cat: 'Reading' },
+  { label: 'The Apple Tree', page: 'reading-4', cat: 'Reading' },
+  { label: 'Seeing Red (colors)', page: 'reading-5', cat: 'Reading' },
+  { label: 'Understanding Dreams', page: 'reading-6', cat: 'Reading' },
+  { label: 'Wonders of Egypt (pyramids)', page: 'reading-7', cat: 'Reading' },
+  { label: 'The Solar System', page: 'reading-8', cat: 'Reading' },
+  { label: 'Importance of Exercise', page: 'reading-9', cat: 'Reading' },
+  { label: 'History of the Internet (ARPANET)', page: 'reading-10', cat: 'Reading' },
+  { label: 'Parts of Speech (nouns, verbs, adjectives)', page: 'grammar-pos', cat: 'Grammar' },
+  { label: 'Sentence Structure (simple, compound, complex)', page: 'grammar-sentence', cat: 'Grammar' },
+  { label: 'Tenses (Present Simple, Past Simple)', page: 'grammar-tenses', cat: 'Grammar' },
+  { label: 'Study Later / Bookmarks', page: 'review', cat: 'Navigation' },
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentPage = 'home';
+let completedPages = new Set(JSON.parse(localStorage.getItem('completedPages') || '[]'));
+let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+let quizStates = {};
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function showPage(pageId) {
+  // hide all
+  document.querySelectorAll('[id^="page-"]').forEach(el => el.classList.remove('active', 'fade-in'));
+  const target = document.getElementById('page-' + pageId);
+  if (!target) return;
+  target.classList.add('active', 'fade-in');
+  currentPage = pageId;
+
+  // update nav
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.page === pageId);
+  });
+
+  // topbar title
+  const titleMap = {
+    home: 'Home', review: 'Study Later',
+    'essay-intro': 'Introduction to Writing', 'essay-structure': 'Essay Structure', 'grammar-accuracy': 'Grammar & Accuracy',
+    'reading-1': 'The Ice Hotel', 'reading-2': 'The Importance of Water', 'reading-3': 'Borrowed Words',
+    'reading-4': 'The Apple Tree', 'reading-5': 'Seeing Red', 'reading-6': 'Understanding Dreams',
+    'reading-7': 'Wonders of Egypt', 'reading-8': 'The Solar System', 'reading-9': 'The Importance of Exercise',
+    'reading-10': 'History of the Internet', 'grammar-pos': 'Parts of Speech',
+    'grammar-sentence': 'Sentence Structure', 'grammar-tenses': 'Tenses'
+  };
+  document.getElementById('topbarTitle').textContent = titleMap[pageId] || pageId;
+
+  // build quizzes for this page
+  buildQuizzesForPage(pageId);
+
+  // mark completed
+  if (pageId !== 'home' && pageId !== 'review') {
+    completedPages.add(pageId);
+    localStorage.setItem('completedPages', JSON.stringify([...completedPages]));
+    updateProgress();
+  }
+
+  // update review bookmarks
+  if (pageId === 'review') renderReview();
+
+  // update bookmark btn state
+  setTimeout(() => updateBookmarkBtns(), 50);
+
+  // close mobile sidebar
+  closeSidebar();
+
+  // scroll to top
+  document.querySelector('.main-content').scrollTop = 0;
+}
+
+function buildQuizzesForPage(pageId) {
+  // map page to quiz IDs
+  const pageQuizMap = {
+    'reading-1': ['quiz-r1', 'quiz-r1-vocab'],
+    'reading-2': ['quiz-r2'],
+    'reading-3': ['quiz-r3'],
+    'reading-4': ['quiz-r4'],
+    'reading-5': ['quiz-r5'],
+    'reading-6': ['quiz-r6'],
+    'reading-7': ['quiz-r7'],
+    'reading-8': ['quiz-r8'],
+    'reading-9': ['quiz-r9'],
+    'reading-10': ['quiz-r10'],
+    'grammar-pos': ['quiz-pos'],
+    'grammar-sentence': ['quiz-sentence'],
+    'grammar-tenses': ['quiz-tenses'],
+  };
+  const ids = pageQuizMap[pageId] || [];
+  ids.forEach(qid => {
+    const container = document.getElementById(qid);
+    if (container && !container.dataset.built) {
+      buildQuiz(qid);
+      container.dataset.built = '1';
+    }
+  });
+}
+
+/* ============================================================
+   QUIZ ENGINE
+   ============================================================ */
+function buildQuiz(qid) {
+  const data = QUIZZES[qid];
+  if (!data) return;
+  const container = document.getElementById(qid);
+  if (!container) return;
+  container.innerHTML = '';
+  const state = { selected: new Array(data.length).fill(null), submitted: false };
+  quizStates[qid] = state;
+
+  data.forEach((item, qi) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-q';
+    div.innerHTML = `<div class="quiz-q-text">${item.q}</div><div class="quiz-options" id="${qid}-opts-${qi}"></div><div class="quiz-feedback" id="${qid}-fb-${qi}"></div>`;
+    container.appendChild(div);
+    const letters = ['a','b','c','d'];
+    const optsDiv = div.querySelector('.quiz-options');
+    item.opts.forEach((opt, oi) => {
+      const btn = document.createElement('div');
+      btn.className = 'quiz-option';
+      btn.innerHTML = `<div class="quiz-letter">${letters[oi]}</div><span>${opt}</span>`;
+      btn.onclick = () => selectOption(qid, qi, oi, btn);
+      optsDiv.appendChild(btn);
+    });
+  });
+
+  const scoreDiv = document.createElement('div');
+  scoreDiv.className = 'quiz-score';
+  scoreDiv.id = `${qid}-score`;
+  scoreDiv.innerHTML = `<div class="quiz-score-num" id="${qid}-score-num"></div><div class="quiz-score-label">correct answers</div><button class="quiz-reset" onclick="resetQuiz('${qid}')">Try Again</button>`;
+  container.appendChild(scoreDiv);
+
+  const submitBtn = document.createElement('button');
+  submitBtn.className = 'quiz-btn';
+  submitBtn.textContent = 'Check Answers';
+  submitBtn.id = `${qid}-submit`;
+  submitBtn.onclick = () => submitQuiz(qid);
+  container.appendChild(submitBtn);
+}
+
+function selectOption(qid, qi, oi, btn) {
+  const state = quizStates[qid];
+  if (state.submitted) return;
+  const opts = btn.parentElement.querySelectorAll('.quiz-option');
+  opts.forEach(o => o.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.selected[qi] = oi;
+}
+
+function submitQuiz(qid) {
+  const state = quizStates[qid];
+  const data = QUIZZES[qid];
+  state.submitted = true;
+  let correct = 0;
+  data.forEach((item, qi) => {
+    const opts = document.querySelectorAll(`#${qid}-opts-${qi} .quiz-option`);
+    const fb = document.getElementById(`${qid}-fb-${qi}`);
+    opts.forEach((opt, oi) => {
+      if (oi === item.ans) opt.classList.add('correct');
+      if (state.selected[qi] === oi && oi !== item.ans) opt.classList.add('wrong');
+    });
+    if (state.selected[qi] === item.ans) {
+      correct++;
+      fb.className = 'quiz-feedback show correct';
+      fb.textContent = '✓ Correct!';
+    } else {
+      fb.className = 'quiz-feedback show wrong';
+      const ansText = item.opts[item.ans];
+      fb.textContent = `✗ The correct answer is: ${ansText}`;
+    }
+  });
+  const scoreEl = document.getElementById(`${qid}-score`);
+  const scoreNum = document.getElementById(`${qid}-score-num`);
+  scoreNum.textContent = `${correct} / ${data.length}`;
+  scoreEl.classList.add('show');
+  document.getElementById(`${qid}-submit`).style.display = 'none';
+}
+
+function resetQuiz(qid) {
+  const container = document.getElementById(qid);
+  container.removeAttribute('data-built');
+  buildQuiz(qid);
+  container.dataset.built = '1';
+}
+
+/* ============================================================
+   FILL IN THE BLANKS
+   ============================================================ */
+function checkFillBlanks(containerId) {
+  const container = document.getElementById(containerId);
+  const inputs = container.querySelectorAll('.blank-input');
+  inputs.forEach(inp => {
+    const userVal = inp.value.trim().toLowerCase();
+    const ans = inp.dataset.ans.toLowerCase();
+    inp.classList.remove('correct', 'wrong');
+    if (userVal === ans) inp.classList.add('correct');
+    else if (userVal !== '') inp.classList.add('wrong');
+  });
+}
+
+/* ============================================================
+   COLLAPSIBLE
+   ============================================================ */
+function toggleCollapsible(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  if (body && body.classList.contains('collapsible-body')) {
+    body.classList.toggle('open');
+  }
+}
+
+/* ============================================================
+   ANSWER REVEAL
+   ============================================================ */
+function toggleAnswer(btn) {
+  const reveal = btn.nextElementSibling;
+  reveal.classList.toggle('show');
+  const span = btn.querySelector('span');
+  if (span) span.textContent = reveal.classList.contains('show') ? '▲ Hide' : '▼ Show Answer';
+}
+
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+function toggleDark() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('theme', isDark ? 'light' : 'dark');
+}
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+
+/* ============================================================
+   BOOKMARKS
+   ============================================================ */
+function toggleBookmark(btn, pageId, label) {
+  const idx = bookmarks.findIndex(b => b.id === pageId);
+  if (idx === -1) {
+    bookmarks.push({ id: pageId, label });
+    btn.classList.add('bookmarked');
+    btn.textContent = '⭐ Bookmarked';
+  } else {
+    bookmarks.splice(idx, 1);
+    btn.classList.remove('bookmarked');
+    btn.textContent = '⭐ Study Later';
+  }
+  localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+}
+function updateBookmarkBtns() {
+  document.querySelectorAll('.bookmark-btn').forEach(btn => {
+    const onclick = btn.getAttribute('onclick') || '';
+    const match = onclick.match(/'([^']+)'/);
+    if (match) {
+      const pageId = match[1];
+      const isBookmarked = bookmarks.some(b => b.id === pageId);
+      btn.classList.toggle('bookmarked', isBookmarked);
+      btn.textContent = isBookmarked ? '⭐ Bookmarked' : '⭐ Study Later';
+    }
+  });
+}
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  if (!bookmarks.length) {
+    list.innerHTML = '<div class="review-empty">No bookmarked items yet. Use the ⭐ bookmark button on any lesson.</div>';
+    return;
+  }
+  list.innerHTML = bookmarks.map(b => `
+    <div class="review-item">
+      <span onclick="showPage('${b.id}')" style="cursor:pointer;color:var(--accent);">${b.label}</span>
+      <button class="review-remove" onclick="removeBookmark('${b.id}')">✕</button>
+    </div>
+  `).join('');
+}
+function removeBookmark(pageId) {
+  bookmarks = bookmarks.filter(b => b.id !== pageId);
+  localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+  renderReview();
+  updateBookmarkBtns();
+}
+
+/* ============================================================
+   PROGRESS
+   ============================================================ */
+const totalPages = 16;
+function updateProgress() {
+  const pct = Math.round((completedPages.size / totalPages) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressText').textContent = pct + '%';
+}
+updateProgress();
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+function doSearch(val) {
+  const resultsDiv = document.getElementById('searchResults');
+  if (!val.trim()) { resultsDiv.innerHTML = ''; resultsDiv.classList.remove('show'); return; }
+  const q = val.toLowerCase();
+  const matches = SEARCH_INDEX.filter(item => item.label.toLowerCase().includes(q));
+  if (!matches.length) { resultsDiv.innerHTML = '<div class="search-result-item">No results found</div>'; resultsDiv.classList.add('show'); return; }
+  resultsDiv.innerHTML = matches.slice(0, 8).map(m =>
+    `<div class="search-result-item" onmousedown="showPage('${m.page}')">${m.label} <span class="search-result-cat">${m.cat}</span></div>`
+  ).join('');
+  resultsDiv.classList.add('show');
+}
+function showSearchResults() {
+  const val = document.getElementById('searchInput').value;
+  if (val.trim()) doSearch(val);
+}
+function hideSearchResults() {
+  setTimeout(() => {
+    document.getElementById('searchResults').classList.remove('show');
+  }, 200);
+}
+
+/* ============================================================
+   MOBILE SIDEBAR
+   ============================================================ */
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+showPage('home');
+updateBookmarkBtns();
+</script>
+</body>
+  </html>
